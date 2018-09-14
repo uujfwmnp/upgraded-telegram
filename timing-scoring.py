@@ -114,12 +114,14 @@ def event():
 					driverTire = "Wet\t"
 				if (drivers[i]['Tire'] == "A"):
 					driverTire = "Red     "
+				if (drivers[i]['Tire'] not in ("P","W","A")):	#Covers tire choices from alternate series, or if the tire choice is blank.
+					driverTire = "Unknown "
 #Oval Race
 				if (event['SessionType'] == "R" and eventType == "Oval"):
 					if (len(drivers[i]['lastName']) >= 12):
 						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "   ", diff2Lead, "       ",  gapAhead, "    ", drivers[i]['status'])
 					if (len(drivers[i]['lastName']) <= 3):
-						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "   ", diff2Lead, "       ",  gapAhead, "    ", drivers[i]['status'])
 					else:
 						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "   ", diff2Lead, "       ",  gapAhead, "    ", drivers[i]['status'])
 #RC/SC Race
@@ -127,7 +129,7 @@ def event():
 					if (len(drivers[i]['lastName']) >= 12):
 						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", diff2Lead, "\t",  gapAhead, "\t", driverTire, p2pRemain, drivers[i]['status'])
 					if (len(drivers[i]['lastName']) <= 3):
-						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", diff2Lead, "\t",  gapAhead, "\t", driverTire, p2pRemain, drivers[i]['status'])
 					else:
 						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", diff2Lead, "\t",  gapAhead, "\t", driverTire, p2pRemain, drivers[i]['status'])
 #Oval Q/P
@@ -135,7 +137,7 @@ def event():
 					if (len(drivers[i]['lastName']) >= 12):
 						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "  ", bestLapTime, "\t", drivers[i]['status'])
 					if (len(drivers[i]['lastName']) <= 3):
-						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					else:
 						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "  ", bestLapTime, "\t", drivers[i]['status'])
 #RC/SC Q
@@ -143,29 +145,29 @@ def event():
 					if (len(drivers[i]['lastName']) >= 12):
 						if (position == "7"):
 							print ("--- TRANSFER CUT OFF ---")
-							print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+							print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
-							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					if (len(drivers[i]['lastName']) <= 3):
 						if (position == "7"):
 							print ("--- TRANSFER CUT OFF ---")
-							print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+							print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
-							print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+							print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					else:
 						if (position == "7"):
 							print ("--- TRANSFER CUT OFF ---")
-							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
-							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 #RC/SC P
 				if (eventType != "Oval" and event['SessionType'] == "P"):
 					if (len(drivers[i]['lastName']) >= 12):
-						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					if (len(drivers[i]['lastName']) <= 3):
-						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					else:
-						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, " ", drivers[i]['status'])
+						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 
 			time.sleep(10)
 			print("Refreshing. . .")
