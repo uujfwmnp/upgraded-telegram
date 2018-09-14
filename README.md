@@ -7,3 +7,4 @@ Comment Bot &amp; Other Racing Stuff
   - Locally running comment script, prints to the screen.
 * timing-scoring.py
   - Locally running T&S script, prints to the screen.
+  - Formatting may occasionally be a bit of a mess in Windows/OSX/*nix depending on JSON data and how each OS handles tabs.
