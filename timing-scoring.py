@@ -56,7 +56,10 @@ def timing():
 		eventSession = "Session:       Practice"
 	if (event['SessionType'] == "R"):
 		eventSession = "Session:       Race"
-		eventLaps = "Lap:           " + event['lapNumber'] + " of " + event['totalLaps']
+		if ('totalLaps' not in event.keys()):
+			eventLaps = "Lap:           " + event['lapNumber']
+		else:
+			eventLaps = "Lap:           " + event['lapNumber'] + " of " + event['totalLaps']
 
 def event():
 	try:
