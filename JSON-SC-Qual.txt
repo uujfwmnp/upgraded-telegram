@@ -16,7 +16,7 @@
 			"SessionType": "Q",
 			"SessionStatus": "WELP",
 			"EventID": "3750",
-			"Comment": "Car 30 6Checkered Flag at: 00:06:51:6029"
+			"Comment": "Car 30 Checkered Flag at: 00:06:51:6029"
 		},
 		"Item": [{
 			"resultID": "0",
