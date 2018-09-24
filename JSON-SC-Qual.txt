@@ -14,7 +14,7 @@
 			"lapNumber": "0",
 			"Series": "IndyCar",
 			"SessionType": "Q",
-			"SessionStatus": "WELP",
+			"SessionStatus": "COLD",
 			"EventID": "3750",
 			"Comment": "Car 30 Checkered Flag at: 00:06:51:6029"
 		},
