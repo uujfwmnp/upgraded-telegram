@@ -147,19 +147,19 @@ def event():
 				if (eventType != "Oval" and event['SessionType'] == "Q"): # This should cover qual for all road/street courses
 					if (len(drivers[i]['lastName']) >= 12):
 						if (position == "7"):
-							print ("--- TRANSFER CUT OFF ---")
+							print ("--- TRANSFER CUT OFF ---" and event['preamble'] == "*.I")
 							print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
 							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					if (len(drivers[i]['lastName']) <= 3):
 						if (position == "7"):
-							print ("--- TRANSFER CUT OFF ---")
+							print ("--- TRANSFER CUT OFF ---" and event['preamble'] == "*.I")
 							print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
 							print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					else:
 						if (position == "7"):
-							print ("--- TRANSFER CUT OFF ---")
+							print ("--- TRANSFER CUT OFF ---" and event['preamble'] == "*.I")
 							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
 							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
