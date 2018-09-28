@@ -48,7 +48,7 @@ def timing():
 				eventSession = "Session:       Qualifying Round 2 (Fast 12)"
 			if (event['preamble'] == "Q4.I"):
 				eventSession = "Session:       Qualifying Round 3 (Fast 6)"
-			if (re.search('Q*.F|Q*.S|Q*.P',event['preamble'])):
+			elif (event['preamble'] != "*.I"):
 				eventSession = "Session:       Qualifying" # This handles road/street qualifying sessions that do not follow the Qx.I format, such as MRTI events
 		else:
 			eventSession = "Session:       Qualifying"	# This handles qualifying sessions for oval tracks
