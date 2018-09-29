@@ -6,9 +6,9 @@ def timing():
 	#Setup Timing & Scoring
 	get = requests.get('http://racecontrol.indycar.com/xml/timingscoring.json') # Request data from Indycar
 	rawdata = get.text															# Set text of GET reply as a variable
-	top = rawdata.replace("jsonCallback(", "")									# Remove top line that is not JSON valid
-	bottom = top.replace(");", "")												# Remove bottom line that is not JSON valid
-	data = json.loads(bottom)													# Load the formatted string as JSON
+	top = rawdata.replace("jsonCallback(", "")	# Remove top line that is not JSON valid
+	bottom = top.replace(");", "")			# Remove bottom line that is not JSON valid
+	data = json.loads(bottom)			# Load the formatted string as JSON
 # LOCAL DEBUG
 #	json_data = open("JSON FILE HERE", "r").read()
 #	data = json.loads(json_data)
