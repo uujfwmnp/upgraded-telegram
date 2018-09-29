@@ -146,8 +146,8 @@ def event():
 #RC/SC Q
 				if (eventType != "Oval" and event['SessionType'] == "Q"): # This should cover qual for all road/street courses
 					if (len(drivers[i]['lastName']) >= 12):
-						if (position == "7"):
-							print ("--- TRANSFER CUT OFF ---" and event['preamble'] == "*.I")
+						if (position == "7" and event['preamble'] == "*.I"):
+							print ("--- TRANSFER CUT OFF ---")
 							print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
 							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
@@ -158,8 +158,8 @@ def event():
 						else:
 							print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					else:
-						if (position == "7"):
-							print ("--- TRANSFER CUT OFF ---" and event['preamble'] == "*.I")
+						if (position == "7" and event['preamble'] == "*.I"):
+							print ("--- TRANSFER CUT OFF ---")
 							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
 							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
