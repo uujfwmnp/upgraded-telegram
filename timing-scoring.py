@@ -24,9 +24,9 @@ def timing():
 
 	if (event['trackType'] == "O" or event['trackType'] == "I"):
 		eventType = "Oval"
-	if (event['trackType'] == "RC"):
+	elif (event['trackType'] == "RC"):
 		eventType = "Road Course"
-	if (event['trackType'] == "SC"):
+	else:
 		eventType = "Street Course"
 
 	if ('overallTimeToGo' not in event.keys()):
@@ -42,19 +42,19 @@ def timing():
 		if (event['trackType'] == "RC" or event['trackType'] == "SC"):
 			if (event['preamble'] == "Q1.I"):
 				eventSession = "Session:       Qualifying Round 1 Group 1"
-			if (event['preamble'] == "Q2.I"):
+			elif (event['preamble'] == "Q2.I"):
 				eventSession = "Session:       Qualifying Round 1 Group 2"
-			if (event['preamble'] == "Q3.I"):
+			elif (event['preamble'] == "Q3.I"):
 				eventSession = "Session:       Qualifying Round 2 (Fast 12)"
-			if (event['preamble'] == "Q4.I"):
+			elif (event['preamble'] == "Q4.I"):
 				eventSession = "Session:       Qualifying Round 3 (Fast 6)"
-			elif (event['preamble'] != "*.I"):
+			else:
 				eventSession = "Session:       Qualifying" # This handles road/street qualifying sessions that do not follow the Qx.I format, such as MRTI events
 		else:
 			eventSession = "Session:       Qualifying"	# This handles qualifying sessions for oval tracks
-	if (event['SessionType'] == "P"):
+	elif (event['SessionType'] == "P"):
 		eventSession = "Session:       Practice"
-	if (event['SessionType'] == "R"):
+	else:
 		eventSession = "Session:       Race"
 		if ('totalLaps' not in event.keys()):
 			eventLaps = "Lap:           " + event['lapNumber']
@@ -89,7 +89,7 @@ def event():
 				else: #if (eventType == "Oval"):
 					print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Diff to Lead: ", "Gap Ahead: ", "Status:")
 
-			if (event['SessionType'] == "Q" or event['SessionType'] == "P"):
+			elif (event['SessionType'] == "Q" or event['SessionType'] == "P"):
 				if (event['trackType'] == "RC" or event['trackType'] == "SC"):
 					print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap: \t", "Best Lap: \t", "Tire: \t ", "Status:")					
 				else: #if (eventType == "Oval"):
@@ -107,17 +107,17 @@ def event():
 				gapAhead = drivers[i]['gap']
 				if (len(drivers[i]['OverTake_Remain']) == 1):
 					p2pRemain = drivers[i]['OverTake_Remain']+"     "
-				if (len(drivers[i]['OverTake_Remain']) == 2):
+				elif (len(drivers[i]['OverTake_Remain']) == 2):
 					p2pRemain = drivers[i]['OverTake_Remain']+"    "
-				if (len(drivers[i]['OverTake_Remain']) == 3):
+				else:
 					p2pRemain = drivers[i]['OverTake_Remain']+"   "
 				if (drivers[i]['Tire'] == "P"):
 					driverTire = "Black   "
-				if (drivers[i]['Tire'] == "W"):
+				elif (drivers[i]['Tire'] == "W"):
 					driverTire = "Wet\t"
-				if (drivers[i]['Tire'] == "A"):
+				elif (drivers[i]['Tire'] == "A"):
 					driverTire = "Red     "
-				if (drivers[i]['Tire'] not in ("P","W","A")):	#Covers tire choices from alternate series, or if the tire choice is blank.
+				else:	#Covers tire choices from alternate series, or if the tire choice is blank.
 					driverTire = "Unknown "
 #Oval Race
 				if (event['SessionType'] == "R" and eventType == "Oval"):
