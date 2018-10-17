@@ -22,7 +22,7 @@ def timing():
 	eventFlag    = "Status:        " + event['currentFlag']
 	eventComment = "Comment:       " + event['Comment']
 
-	if (event['trackType'] == "O"):
+	if (event['trackType'] == "O" or event['trackType'] == "I"):
 		eventType = "Oval"
 	if (event['trackType'] == "RC"):
 		eventType = "Road Course"
