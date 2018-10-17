@@ -41,7 +41,7 @@ try:
 					time.sleep(5)
 			else:					# If the new comment *does* match the old stored comment. . .
 				time.sleep(5)			# Keep the while loop running, but do not do anything.
-		if session == "R":
+		else:
 			if oldComment != newComment:	# If the new comment does not match the old stored comment. . .
 				commentSTR = "["+time.strftime('%X')+"] " + newComment
 				print(commentSTR)		# Print a the timestamp & comment. . .
