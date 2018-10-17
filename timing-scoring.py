@@ -123,7 +123,7 @@ def event():
 				if (event['SessionType'] == "R" and eventType == "Oval"):
 					if (len(drivers[i]['lastName']) >= 12):
 						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "   ", diff2Lead, "       ",  gapAhead, "    ", drivers[i]['status'])
-					if (len(drivers[i]['lastName']) <= 3):
+					elif (len(drivers[i]['lastName']) <= 3):
 						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "   ", diff2Lead, "       ",  gapAhead, "    ", drivers[i]['status'])
 					else:
 						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "   ", diff2Lead, "       ",  gapAhead, "    ", drivers[i]['status'])
@@ -131,7 +131,7 @@ def event():
 				if (event['SessionType'] == "R" and eventType != "Oval"): # This should cover all road/street course races
 					if (len(drivers[i]['lastName']) >= 12):
 						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", diff2Lead, "\t",  gapAhead, "\t", driverTire, p2pRemain, drivers[i]['status'])
-					if (len(drivers[i]['lastName']) <= 3):
+					elif (len(drivers[i]['lastName']) <= 3):
 						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", diff2Lead, "\t",  gapAhead, "\t", driverTire, p2pRemain, drivers[i]['status'])
 					else:
 						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", diff2Lead, "\t",  gapAhead, "\t", driverTire, p2pRemain, drivers[i]['status'])
@@ -139,7 +139,7 @@ def event():
 				if (eventType == "Oval" and (event['SessionType'] == "Q" or event['SessionType'] == "P")):
 					if (len(drivers[i]['lastName']) >= 12):
 						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "  ", bestLapTime, "\t", drivers[i]['status'])
-					if (len(drivers[i]['lastName']) <= 3):
+					elif (len(drivers[i]['lastName']) <= 3):
 						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					else:
 						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "  ", bestLapTime, "\t", drivers[i]['status'])
@@ -151,7 +151,7 @@ def event():
 							print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 						else:
 							print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
-					if (len(drivers[i]['lastName']) <= 3):
+					elif (len(drivers[i]['lastName']) <= 3):
 						if (position == "7"):
 							print ("--- TRANSFER CUT OFF ---" and event['preamble'] == "*.I")
 							print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
@@ -167,7 +167,7 @@ def event():
 				if (eventType != "Oval" and event['SessionType'] == "P"):
 					if (len(drivers[i]['lastName']) >= 12):
 						print (position, "\t  ", driverName, "\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
-					if (len(drivers[i]['lastName']) <= 3):
+					elif (len(drivers[i]['lastName']) <= 3):
 						print (position, "\t  ", driverName, "\t\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
 					else:
 						print (position, "\t  ", driverName, "\t\t", carNum, "\t", lastLapTime, "\t", bestLapTime, "\t", driverTire, drivers[i]['status'])
