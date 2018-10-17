@@ -49,7 +49,7 @@ async def indycar_comments():
 							oldComment = newComment				# Set the new comment to be the old comment
 							print(listCount)
 							time.sleep(10)						# 10 second wait before restarting loop
-						if len(commentLST) == 5:
+						elif len(commentLST) == 5:
 							commentSTR = "\n".join(commentLST)
 							print("Printing Comments\n")		# Local Print the comment string
 							msg = "```" + commentSTR + "```"
@@ -83,7 +83,7 @@ async def indycar_comments():
 							commentLST = []
 							count = 0							# Reset the timeout counter
 							break
-						if count == 5 and len(commentLST) == 5:	# If we hit the time limit and get 5 new comments
+						elif count == 5 and len(commentLST) == 5:	# If we hit the time limit and get 5 new comments
 							print("5s & 5 comment Timeout!",commentLST)	# Local Print the comment list
 							commentSTR = "\n".join(commentLST)
 							msg = "```" + commentSTR + "```"
@@ -93,7 +93,7 @@ async def indycar_comments():
 							commentLST = []
 							count = 0
 							break
-						if count == 5 and len(commentLST) == 0:	# If we hit the time limit and have ZERO comments (red flag situation)
+						elif count == 5 and len(commentLST) == 0:	# If we hit the time limit and have ZERO comments (red flag situation)
 							print("Zero Comments",commentLST)	# Local Print the comment list
 							commentSTR = ""
 							commentLST = []
@@ -110,7 +110,7 @@ async def indycar_comments():
 						commentLST.append("["+time.strftime('%X')+"] " + newComment)
 						oldComment = newComment				# Set the new comment to be the old comment
 						time.sleep(10)						# 10 second wait before restarting loop
-					if len(commentLST) == 5:
+					elif len(commentLST) == 5:
 						commentSTR = "\n".join(commentLST)
 						print("Printing Comments\n")		# Local Print the comment string
 						msg = "```" + commentSTR + "```"
@@ -141,7 +141,7 @@ async def indycar_comments():
 							commentLST = []
 							count = 0							# Reset the timeout counter
 							break
-						if count == 5 and len(commentLST) == 5:	# If we hit the time limit and get 5 new comments
+						elif count == 5 and len(commentLST) == 5:	# If we hit the time limit and get 5 new comments
 							print("5s & 5 comment Timeout!",commentLST)	# Local Print the comment list
 							commentSTR = "\n".join(commentLST)
 							msg = "```" + commentSTR + "```"
@@ -151,7 +151,7 @@ async def indycar_comments():
 							commentLST = []
 							count = 0
 							break
-						if count == 5 and len(commentLST) == 0:	# If we hit the time limit and have ZERO comments (red flag situation)
+						elif count == 5 and len(commentLST) == 0:	# If we hit the time limit and have ZERO comments (red flag situation)
 							print("Zero Comments",commentLST)	# Local Print the comment list
 							commentSTR = ""
 							commentLST = []
