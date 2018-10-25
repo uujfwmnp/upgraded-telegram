@@ -8,3 +8,4 @@ Comment Bot &amp; Other Racing Stuff
 * timing-scoring.py
   - Locally running T&S script, prints to the screen.
   - Formatting may occasionally be a bit of a mess in Windows/OSX/*nix depending on JSON data and how each OS handles tabs.
+  - Next major update will support IMS with stuff like no tow laps, speed averages, etc.
