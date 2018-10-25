@@ -2,24 +2,6 @@ import requests
 import json
 import time, os, sys
 
-def rsQual(qSession):
-    switcher = {
-        "Q1.I": "Session:       Qualifying Round 1 Group 1",
-        "Q2.I": "Session:       Qualifying Round 1 Group 2",
-        "Q3.I": "Session:       Qualifying Round 2 (Fast 12)",
-        "Q4.I": "Session:       Qualifying Round 2 (Fast 6)"
-    }
-    result = switcher.get(qSession, "Session:       Qualifying")
-    return result
-def tires(qSession):
-    switcher = {
-        "P": "Black  ",
-        "W": "Wet    ",
-        "A": "Red    "
-    }
-    result = switcher.get(qSession, "Unknown")
-    return result
-
 def timing():
     #Setup Timing & Scoring
     get = requests.get('http://racecontrol.indycar.com/xml/timingscoring.json') # Request data from Indycar
@@ -70,6 +52,47 @@ def timing():
         else:
             eventLaps = "Lap:           " + event['lapNumber'] + " of " + event['totalLaps']
 
+def rsQual(qSession):
+    switcher = {
+        "Q1.I": "Session:       Qualifying Round 1 Group 1",
+        "Q2.I": "Session:       Qualifying Round 1 Group 2",
+        "Q3.I": "Session:       Qualifying Round 2 (Fast 12)",
+        "Q4.I": "Session:       Qualifying Round 2 (Fast 6)"
+    }
+    result = switcher.get(qSession, "Session:       Qualifying")
+    return result
+def tires(tireType):
+    switcher = {
+        "P": "Black  ",
+        "W": "Wet    ",
+        "A": "Red    "
+    }
+    result = switcher.get(tireType, "Unknown")
+    return result
+def lapSpacing(length):
+    switcher = {
+        7: "    ",
+        10: " "
+    }
+    result = switcher.get(length, "  ")
+    return result
+def gapSpacing(length):
+    switcher = {
+        6: "     ",
+        7: "    ",
+        8: "   ",
+        9: "  "
+    }
+    result = switcher.get(length, "  ")
+    return result
+def p2pSpacing(length):
+    switcher = {
+        1: "     ",
+        2: "    "
+    }
+    result = switcher.get(length, "   ")
+    return result
+
 def event():
     try:
         while True:
@@ -94,9 +117,9 @@ def event():
                     passTotal += int(passCount)
                 print("Total Passes: ",passTotal,"\n")
                 if (event['trackType'] == "RC" or event['trackType'] == "SC"):
-                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Diff to Lead: ", "Gap Ahead: ", "Tire:  ", "P2P:  ", "Status:")
+                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Lead Gap:  ", "Gap Ahead: ", "Tire:  ", "P2P:  ", "Status:")
                 else: #if (eventType == "Oval"):
-                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Diff to Lead: ", "Gap Ahead: ", "Status:")
+                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Lead Gap:  ", "Gap Ahead: ", "Status:")
 
             elif (event['SessionType'] == "Q" or event['SessionType'] == "P"):
                 if (event['trackType'] == "RC" or event['trackType'] == "SC"):
@@ -115,41 +138,11 @@ def event():
                     driverName = drivers[i]['lastName'] + "\t\t"
                 carNum = drivers[i]['no']
                 team = drivers[i]['team']
-                #Best Lap Time + Spacing
-                if (len(drivers[i]['bestLapTime']) == 7):
-                    bestLapTime = drivers[i]['bestLapTime'] + "    "
-                elif (len(drivers[i]['bestLapTime']) == 10):
-                    bestLapTime = drivers[i]['bestLapTime'] + " "
-                else:
-                    bestLapTime = drivers[i]['bestLapTime'] + "  "
-                #Last Lap Time + Spacing
-                if (len(drivers[i]['lastLapTime']) == 7):
-                    lastLapTime = drivers[i]['lastLapTime'] + "    "
-                elif (len(drivers[i]['lastLapTime']) == 10):
-                    lastLapTime = drivers[i]['lastLapTime'] + " "
-                else:
-                    lastLapTime = drivers[i]['lastLapTime'] + "  "
-                #Distance to Leader Time + Spacing
-                if (len(drivers[i]['diff']) == 6):
-                    diff2Lead = drivers[i]['diff'] + "        "
-                elif (len(drivers[i]['diff']) == 7):
-                    diff2Lead = drivers[i]['diff'] + "       "
-                elif (len(drivers[i]['diff']) == 9):
-                    diff2Lead = drivers[i]['diff'] + "     "
-                #Position Gap Time + Spacing
-                if (len(drivers[i]['gap']) == 6):
-                    gapAhead = drivers[i]['gap'] + "     "
-                elif (len(drivers[i]['gap']) == 7):
-                    gapAhead = drivers[i]['gap'] + "    "
-                elif (len(drivers[i]['gap']) == 9):
-                    gapAhead = drivers[i]['gap'] + "  "
-                #Overtake + Spacing
-                if (len(drivers[i]['OverTake_Remain']) == 1):
-                    p2pRemain = drivers[i]['OverTake_Remain']+"     "
-                elif (len(drivers[i]['OverTake_Remain']) == 2):
-                    p2pRemain = drivers[i]['OverTake_Remain']+"    "
-                else:
-                    p2pRemain = drivers[i]['OverTake_Remain']+"   "
+                bestLapTime = drivers[i]['bestLapTime'] + lapSpacing(len(drivers[i]['bestLapTime']))
+                lastLapTime = drivers[i]['lastLapTime'] + lapSpacing(len(drivers[i]['lastLapTime']))
+                diff2Lead = drivers[i]['diff'] + gapSpacing(len(drivers[i]['diff']))
+                gapAhead = drivers[i]['gap'] + gapSpacing(len(drivers[i]['gap']))
+                p2pRemain = drivers[i]['OverTake_Remain'] + p2pSpacing(len(drivers[i]['OverTake_Remain']))
                 driverTire = tires(drivers[i]['Tire'])
 #Oval Race
                 if (event['SessionType'] == "R" and eventType == "Oval"):
