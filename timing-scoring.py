@@ -163,7 +163,7 @@ def event():
                     else: #(event['SessionType'] == "P"):
                         print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
 
-                        time.sleep(10)
+            time.sleep(10)
             print("Refreshing. . .")
             time.sleep(1)
     except KeyboardInterrupt:
