@@ -144,27 +144,26 @@ def event():
                 gapAhead = drivers[i]['gap'] + gapSpacing(len(drivers[i]['gap']))
                 p2pRemain = drivers[i]['OverTake_Remain'] + p2pSpacing(len(drivers[i]['OverTake_Remain']))
                 driverTire = tires(drivers[i]['Tire'])
-#Oval Race
-                if (event['SessionType'] == "R" and eventType == "Oval"):
-                    print (position, "\t  ", driverName, carNum, "\t", lastLapTime, diff2Lead, gapAhead, drivers[i]['status'])
-#Oval Q/P
-                elif (eventType == "Oval" and (event['SessionType'] == "Q" or event['SessionType'] == "P")):
-                    print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, drivers[i]['status'])
-#RC/SC Race
-                elif (event['SessionType'] == "R" and eventType != "Oval"): # This should cover all road/street course races
-                    print (position, "\t  ", driverName, carNum, "\t", lastLapTime, diff2Lead, gapAhead, driverTire, p2pRemain, drivers[i]['status'])
-#RC/SC Q/P
-                elif (eventType != "Oval"):
-                    if (event['SessionType'] == "Q"): # This should cover qual for all road/street courses
+#Oval
+                if (eventType == "Oval"):
+                    if (event['SessionType'] == "R"):
+                        print (position, "\t  ", driverName, carNum, "\t", lastLapTime, diff2Lead, gapAhead, drivers[i]['status'])
+                    else: #(event['SessionType'] == "Q" or event['SessionType'] == "P")):
+                        print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, drivers[i]['status'])
+#Road Course/Street Course
+                else:
+                    if (event['SessionType'] == "R"): # This should cover all road/street course races
+                        print (position, "\t  ", driverName, carNum, "\t", lastLapTime, diff2Lead, gapAhead, driverTire, p2pRemain, drivers[i]['status'])
+                    elif (event['SessionType'] == "Q"): # This should cover qual for all road/street courses
                         if (position == "7" and event['preamble'] == "*.I"):
                             print ("--- TRANSFER CUT OFF ---")
                             print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
                         else:
                             print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
-                    elif (event['SessionType'] == "P"):
+                    else: #(event['SessionType'] == "P"):
                         print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
 
-            time.sleep(10)
+                        time.sleep(10)
             print("Refreshing. . .")
             time.sleep(1)
     except KeyboardInterrupt:
