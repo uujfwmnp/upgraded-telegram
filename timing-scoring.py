@@ -153,17 +153,17 @@ def event():
 #RC/SC Race
                 elif (event['SessionType'] == "R" and eventType != "Oval"): # This should cover all road/street course races
                     print (position, "\t  ", driverName, carNum, "\t", lastLapTime, diff2Lead, gapAhead, driverTire, p2pRemain, drivers[i]['status'])
-#RC/SC Q
-                elif (eventType != "Oval" and event['SessionType'] == "Q"): # This should cover qual for all road/street courses
-                    if (position == "7" and event['preamble'] == "*.I"):
-                        print ("--- TRANSFER CUT OFF ---")
+#RC/SC Q/P
+                elif (eventType != "Oval"):
+                    if (event['SessionType'] == "Q"): # This should cover qual for all road/street courses
+                        if (position == "7" and event['preamble'] == "*.I"):
+                            print ("--- TRANSFER CUT OFF ---")
+                            print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
+                        else:
+                            print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
+                    elif (event['SessionType'] == "P"):
                         print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
-                    else:
-                        print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
-#RC/SC P
-                elif (eventType != "Oval" and event['SessionType'] == "P"):
-                    print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
-                        
+
             time.sleep(10)
             print("Refreshing. . .")
             time.sleep(1)
