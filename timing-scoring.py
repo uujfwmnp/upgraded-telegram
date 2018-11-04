@@ -120,8 +120,7 @@ def event():
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Lead Gap:  ", "Gap Ahead: ", "Tire:  ", "P2P:  ", "Status:")
                 else: #if (eventType == "Oval"):
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Lead Gap:  ", "Gap Ahead: ", "Status:")
-
-            elif (event['SessionType'] == "Q" or event['SessionType'] == "P"):
+            else:
                 if (event['trackType'] == "RC" or event['trackType'] == "SC"):
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Tire:  ", "Status:")                    
                 else: #if (eventType == "Oval"):
