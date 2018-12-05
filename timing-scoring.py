@@ -26,8 +26,10 @@ def timing():
         eventType = "Oval"
     elif (event['trackType'] == "RC"):
         eventType = "Road Course"
-    else:
+    elif (event['trackType'] == "SC"):
         eventType = "Street Course"
+    else:
+        eventType = "Race Course"
 
     if ('overallTimeToGo' not in event.keys()):
         eventTime = "Elapsed Time:  " + event['elapsedTime']     # Qual/Race will show elapsed time
@@ -39,7 +41,7 @@ def timing():
 
     #Start the show!
     if (event['SessionType'] == "Q"):
-        if (event['trackType'] == "RC" or event['trackType'] == "SC"):
+        if (eventType != "Oval"): # Road/Street
             eventSession = rsQual(event['preamble'])
         else:
             eventSession = "Session:       Qualifying"     # This handles qualifying sessions for oval tracks
@@ -116,12 +118,12 @@ def event():
                     passCount = drivers[i].get('Passes', 0)
                     passTotal += int(passCount)
                 print("Total Passes: ",passTotal,"\n")
-                if (event['trackType'] == "RC" or event['trackType'] == "SC"):
+                if (eventType != "Oval"): # Road/Street
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Lead Gap:  ", "Gap Ahead: ", "Tire:  ", "P2P:  ", "Status:")
                 else: #if (eventType == "Oval"):
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Lead Gap:  ", "Gap Ahead: ", "Status:")
             else:
-                if (event['trackType'] == "RC" or event['trackType'] == "SC"):
+                if (eventType != "Oval"): # Road/Street
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Tire:  ", "Status:")                    
                 else: #if (eventType == "Oval"):
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Status:")
@@ -130,7 +132,7 @@ def event():
             for i in range(0, len(drivers)):
                 position = drivers[i]['rank']
                 if (len(drivers[i]['lastName']) >= 12):
-                    driverName = drivers[i]['lastName'] + "\t"
+                    driverName = drivers[i]['lastName'] + " \t"
                 elif (len(drivers[i]['lastName']) <= 4):
                     driverName = drivers[i]['lastName'] + "\t\t\t"
                 else:
