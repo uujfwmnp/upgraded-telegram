@@ -4,11 +4,11 @@ import time, os, sys
 
 def timing():
     #Setup Timing & Scoring
-    tsGet = requests.get('https://scoring.imsa.com/scoring_data/RaceResults_JSONP.json')    # Request data from Indycar
+    tsGet = requests.get('https://scoring.imsa.com/scoring_data/RaceResults_JSONP.json')    # Request data from IMSA
     rawdata = tsGet.text                                                                    # Set text of GET reply as a variable
     top = rawdata.replace("jsonpRaceResults(", "")                                          # Remove top line that is not JSON valid
     bottom = top.replace(");", "")                                                          # Remove bottom line that is not JSON valid
-    tsData = json.loads(bottom)                                                             # Load the formatted string as JSON
+    rawTS = json.loads(bottom)                                                              # Load the formatted string as JSON
     sessionGet = requests.get('https://scoring.imsa.com/scoring_data/SessionInfo_JSONP.json')
     rawdata = sessionGet.text
     top = rawdata.replace("jsonpSessionInfo(", "")
@@ -27,8 +27,12 @@ def timing():
     eventTime    = "Elapsed Time:  " + session['TT']
     eventLeft    = "Time Left:     " + session['TR']
 
-    #Setup Array Driver Variables
-    drivers = tsData['B']
+    #Setup Array Driver Variables to purge junk data from the raw feed
+    driversRaw = rawTS['B']
+    drivers = []
+    for i in range(0, len(driversRaw)):
+        if (driversRaw[i]['C'] != ""):      # If the Class field is blank, this isn't a real driver.
+            drivers.append (driversRaw[i])
 
     #Start the show!
 def lapSpacing(length):
