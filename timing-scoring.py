@@ -73,6 +73,7 @@ def tires(tireType):
     return result
 def lapSpacing(length):
     switcher = {
+        6: "     ",
         7: "    ",
         10: " "
     }
