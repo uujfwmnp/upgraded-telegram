@@ -1,6 +1,11 @@
 # upgraded-telegram
 Comment Bot &amp; Other Racing Stuff
 
+### Requirements:
+* Python 3
+* Requests module (`pip install requests`)
+
+#### Files:
 * discord-comment.py
   - Comment bot for Discord. Doesn't fully work as of the initial commit. Crashes after completing the second loop. Some kind of async issue, I'm not able to figure it out.
 * local-comment.py
