@@ -26,6 +26,7 @@ $topTrim    = str_replace("jsonCallback(","",$get);     //Trim top line
 $bottomTrim = str_replace(");","",$topTrim);            //Trim bottom line
 $data       = json_decode($bottomTrim);                 //Load formatted string as JSON data
 $event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
+
 //DEBUG
 /*
 $get        = file_get_contents("JSON-RC-Race.txt");
@@ -108,9 +109,11 @@ if ($event->{'SessionType'} == "R") { //If event is a Race. . .
 			<th>Last Lap</th>
 			<th>Gap to Leader</th>
 			<th>Gap Ahead</th>
-			<th>Tire</th>
-			<th>Push 2 Pass Remaining</th>
-			<th>Status</th>
+			<th>Tire</th>';
+		if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's a Lights or Indycar Race
+			echo '<th>Push 2 Pass Remaining</th>';
+		}
+		echo '	<th>Status</th>
 		</tr>
 	</thead>';
 	}
@@ -169,7 +172,12 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	if($drivers->{'bestLapTime'} != "0.0000"){
 		$bestLap[] = $drivers->{'bestLapTime'};	//Fill the array with completed laps
 	}
-	$bestMin = min($bestLap);	//Locate the fastest lap
+	if($bestLap == NULL){
+		$bestLapTime = $drivers->{'bestLapTime'};	//If no laps have been set, print the normal laptimes.
+	}
+	else{
+		$bestMin = min($bestLap);	//Locate the fastest lap
+	}
 	if ($drivers->{'bestLapTime'} == $bestMin){
 		$bestLapTime = "<p style='color:purple;font-weight:bold;'>".$drivers->{'bestLapTime'}."</p>";
 	}
@@ -213,7 +221,12 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	//Road Course/Street Course
 	else{
 		if ($event->{'SessionType'} == "R"){ // This should cover racing for all road/street courses
-			print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$driverTire. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
+			if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's an Indy Lights or ICS race
+				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$driverTire. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
+			}
+			else {
+				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
+			}
 		}
 		elseif ($event->{'SessionType'} == "Q"){ // This should cover qualification for all road/street courses
 			if ($position == "7" and preg_match("/\.I/", $event->{'preamble'})){ //optionally: preg_match("/Q.\.I/", $event->{'preamble'})
