@@ -1,6 +1,6 @@
 import requests
 import json
-import time, os, sys
+import re, time, os, sys
 
 def timing():
     #Setup Timing & Scoring
@@ -157,7 +157,7 @@ def event():
                     if (event['SessionType'] == "R"): # This should cover all road/street course races
                         print (position, "\t  ", driverName, carNum, "\t", lastLapTime, diff2Lead, gapAhead, driverTire, p2pRemain, drivers[i]['status'])
                     elif (event['SessionType'] == "Q"): # This should cover qual for all road/street courses
-                        if (position == "7" and event['preamble'] == "*.I"):
+                        if (position == "7" and re.search(".I",event['preamble'])):
                             print ("--- TRANSFER CUT OFF ---")
                             print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, driverTire, drivers[i]['status'])
                         else:
