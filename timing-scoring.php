@@ -4,7 +4,7 @@
 <style>
 table {
   border-collapse: collapse;
-  width: 50%;
+  width: 100%;
 }
 table, th, td {
   border: 1px solid black;
@@ -76,7 +76,7 @@ else{
 	$eventSession = "Race";
 }
 
-print "<tr><td style='font-weight:bold;'>Race Name:</td><td>" . $event->{'eventName'} . "</td></tr>";
+print "<tr><td style='font-weight:bold; width:100px;'>Race Name:</td><td>" . $event->{'eventName'} . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Track Name:</td><td>" . $event->{'trackName'} . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Session:</td><td>" . $eventSession . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Status:</td><td>" . $eventFlag . "</td></tr>";
@@ -109,6 +109,12 @@ if ($event->{'SessionType'} == "R") { //If event is a Race. . .
 			<th>Last Lap</th>
 			<th>Gap to Leader</th>
 			<th>Gap Ahead</th>
+			<th>Best S1</th>
+			<th>Best S2</th>
+			<th>Best S3</th>
+			<th>Last S1</th>
+			<th>Last S2</th>
+			<th>Last S3</th>
 			<th>Tire</th>';
 		if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's a Lights or Indycar Race
 			echo '<th>Push 2 Pass Remaining</th>';
@@ -162,30 +168,35 @@ else { //If event *is not* a Race. . .
 
 	<tbody>
 <?php
-//Driver Tables
+//Driver Tables: Lap Times
 $bestLap = array();	//Setup an empty array to strip out uncompleted laps
 foreach ($data->{'timing_results'}->{'Item'} as $drivers){
-	$position		= $drivers->{'rank'};
-	$driverName 	= $drivers->{'lastName'};
-	$carNum 		= $drivers->{'no'};
-	$team 			= $drivers->{'team'};
 	if($drivers->{'bestLapTime'} != "0.0000"){
 		$bestLap[] = $drivers->{'bestLapTime'};	//Fill the array with completed laps
 	}
 	if($bestLap == NULL){
 		$bestLapTime = $drivers->{'bestLapTime'};	//If no laps have been set, print the normal laptimes.
 	}
-	else{
-		$bestMin = min($bestLap);	//Locate the fastest lap
-	}
-	if ($drivers->{'bestLapTime'} == $bestMin){
+}
+$bestMin = min($bestLap);	//Locate the fastest lap
+
+//Driver Tables: Everything Else
+foreach ($data->{'timing_results'}->{'Item'} as $drivers){
+	$position		= $drivers->{'rank'};
+	$driverName 	= $drivers->{'lastName'};
+	$carNum 		= $drivers->{'no'};
+	$team 			= $drivers->{'team'};
+	if ($drivers->{'bestLapTime'} == $bestMin){	//If a driver's fastest lap is best overall, color it purple
 		$bestLapTime = "<p style='color:purple;font-weight:bold;'>".$drivers->{'bestLapTime'}."</p>";
 	}
 	else{
 		$bestLapTime = $drivers->{'bestLapTime'};
 	}
-	if ($drivers->{'lastLapTime'} == $bestMin){
+	if ($drivers->{'lastLapTime'} == $bestMin){	//If a driver's last lap is best overall, color it purple
 		$lastLapTime = "<p style='color:purple;font-weight:bold;'>".$drivers->{'lastLapTime'}."</p>";
+	}
+	if ($drivers->{'lastLapTime'} == $drivers->{'bestLapTime'} && $drivers->{'lastLapTime'} != $bestMin){	//If a driver's last lap is their personal best, color it green
+		$lastLapTime = "<p style='color:green;font-weight:bold;'>".$drivers->{'lastLapTime'}."</p>";
 	}
 	else{
 		$lastLapTime = $drivers->{'lastLapTime'};
@@ -220,9 +231,17 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	}
 	//Road Course/Street Course
 	else{
+		//Best Sectors
+		$bSect1			= $drivers->{'Best_I1'};
+		$bSect2			= $drivers->{'Best_I2'};
+		$bSect3			= $drivers->{'Best_I3'};
+		//Last Sectors
+		$lSect1			= $drivers->{'I1'};
+		$lSect2			= $drivers->{'I2'};
+		$lSect3			= $drivers->{'I3'};
 		if ($event->{'SessionType'} == "R"){ // This should cover racing for all road/street courses
 			if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's an Indy Lights or ICS race
-				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$driverTire. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
+				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
 			}
 			else {
 				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
@@ -231,10 +250,10 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		elseif ($event->{'SessionType'} == "Q"){ // This should cover qualification for all road/street courses
 			if ($position == "7" and preg_match("/\.I/", $event->{'preamble'})){ //optionally: preg_match("/Q.\.I/", $event->{'preamble'})
 				print "<tr><td colspan='100%' style='text-align: center;'>--- TRANSFER CUT OFF ---</td></tr>";
-				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
+				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
 			}
 			else{
-				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
+				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
 			}
 		}
 		else{ //This should cover practice for all road/street courses
