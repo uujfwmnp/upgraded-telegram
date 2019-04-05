@@ -20,6 +20,7 @@ tr:nth-child(even) {
 <div style="overflow-x:auto;">
 <table>
 <?php
+
 $ch = curl_init();		//Setting up cURL request to pull JSON
 curl_setopt($ch, CURLOPT_URL, "http://racecontrol.indycar.com/xml/timingscoring.json");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -32,7 +33,7 @@ $event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
 
 //DEBUG
 /*
-$get        = file_get_contents("JSON-RC-Race.txt");
+$get        = file_get_contents("JSON-SC-Qual.txt");
 $data       = json_decode($get);		//Load local data file as JSON data
 $event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
 */
@@ -79,7 +80,7 @@ else{
 	$eventSession = "Race";
 }
 
-print "<tr><td style='font-weight:bold; width:50px;'>Race Name:</td><td>" . $event->{'eventName'} . "</td></tr>";
+print "<tr><td style='font-weight:bold; width:10%;'>Race Name:</td><td>" . $event->{'eventName'} . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Track Name:</td><td>" . $event->{'trackName'} . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Session:</td><td>" . $eventSession . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Status:</td><td>" . $eventFlag . "</td></tr>";
@@ -183,47 +184,46 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	if($drivers->{'bestLapTime'} != "0.0000"){
 		$bestLap[] = $drivers->{'bestLapTime'};	//Fill the array with completed laps
 	}
-	if($bestLap == NULL){
-		$bestLapTime = $drivers->{'bestLapTime'};	//If no laps have been set, print the normal laptimes.
-	}
 }
-$bestMin = min($bestLap);	//Locate the fastest lap
+if($bestLap != NULL){	//If the array is not empty
+	$bestMin = min($bestLap);	//Locate the fastest lap
+}
 
-//Driver Tables: Best Sector 1
-$bestS1 = array();	//Setup an empty array to strip out uncompleted S1
-foreach ($data->{'timing_results'}->{'Item'} as $drivers){
-	if($drivers->{'Best_I1'} != "0.0000"){
-		$bestS1[] = $drivers->{'Best_I1'};	//Fill the array with completed S1
+//Driver Tables: Best Sectors
+if ($eventType != "Oval"){	//This only applies for road/street courses
+	//Best Sector 1
+	$bestS1 = array();	//Setup an empty array to strip out uncompleted S1
+	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
+		if($drivers->{'Best_I1'} != "0.0000"){
+			$bestS1[] = $drivers->{'Best_I1'};	//Fill the array with completed S1
+		}
 	}
-	if($bestS1 == NULL){
-		$bSect1 = $drivers->{'Best_I1'};	//If no S1 have been set, print the normal S1.
+	if($bestS1 != NULL){
+		$bestS1Min = min($bestS1);	//Locate the fastest S1
 	}
-}
-$bestS1Min = min($bestS1);	//Locate the fastest S1
 
-//Driver Tables: Best Sector 2
-$bestS2 = array();	//Setup an empty array to strip out uncompleted S2
-foreach ($data->{'timing_results'}->{'Item'} as $drivers){
-	if($drivers->{'Best_I2'} != "0.0000"){
-		$bestS2[] = $drivers->{'Best_I2'};	//Fill the array with completed S2
+	//Best Sector 2
+	$bestS2 = array();	//Setup an empty array to strip out uncompleted S2
+	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
+		if($drivers->{'Best_I2'} != "0.0000"){
+			$bestS2[] = $drivers->{'Best_I2'};	//Fill the array with completed S2
+		}
 	}
-	if($bestS2 == NULL){
-		$bSect2 = $drivers->{'Best_I2'};	//If no S2 have been set, print the normal S2.
+	if($bestS2 != NULL){
+		$bestS2Min = min($bestS2);	//Locate the fastest S2
 	}
-}
-$bestS2Min = min($bestS2);	//Locate the fastest S2
 
-//Driver Tables: Best Sector 3
-$bestS3 = array();	//Setup an empty array to strip out uncompleted S3
-foreach ($data->{'timing_results'}->{'Item'} as $drivers){
-	if($drivers->{'Best_I3'} != "0.0000"){
-		$bestS3[] = $drivers->{'Best_I3'};	//Fill the array with completed S3
+	//Best Sector 3
+	$bestS3 = array();	//Setup an empty array to strip out uncompleted S3
+	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
+		if($drivers->{'Best_I3'} != "0.0000"){
+			$bestS3[] = $drivers->{'Best_I3'};	//Fill the array with completed S3
+		}
 	}
-	if($bestS3 == NULL){
-		$bSect3 = $drivers->{'Best_I3'};	//If no S3 have been set, print the normal S3.
+	if($bestS3 != NULL){
+		$bestS3Min = min($bestS3);	//Locate the fastest S3
 	}
 }
-$bestS3Min = min($bestS3);	//Locate the fastest S3
 
 //Driver Tables: Everything Else
 foreach ($data->{'timing_results'}->{'Item'} as $drivers){
@@ -280,49 +280,70 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	//Road Course/Street Course
 	else{
 		//Best Sectors
-		if ($drivers->{'Best_I1'} == $bestS1Min){	//If a driver's fastest Sector 1 is best overall, color it purple
-			$bSect1 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'Best_I1'}."</p>";
+		if (array_key_exists('Best_I1', $drivers) == FALSE){	//If the Best S1 key doesn't exist, set the printed result to be dashes
+			$bSect1 = "<p style='text-align: center;'>--</p>";
 		}
-		else{
-			$bSect1 = $drivers->{'Best_I1'};
+		else {
+			if ($drivers->{'Best_I1'} == $bestS1Min){	//If a driver's fastest Sector 1 is best overall, color it purple
+				$bSect1 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'Best_I1'}."</p>";
+			}
+			else{
+				$bSect1 = $drivers->{'Best_I1'};
+			}
 		}
-		if ($drivers->{'Best_I2'} == $bestS2Min){	//If a driver's fastest Sector 2 is best overall, color it purple
-			$bSect2 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'Best_I2'}."</p>";
+		if (array_key_exists('Best_I2', $drivers) == FALSE){	//If the Best S2 key doesn't exist, set the printed result to be dashes
+			$bSect2 = "<p style='text-align: center;'>--</p>";
 		}
-		else{
-			$bSect2 = $drivers->{'Best_I2'};
+		else {
+			if ($drivers->{'Best_I2'} == $bestS2Min){	//If a driver's fastest Sector 2 is best overall, color it purple
+				$bSect2 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'Best_I2'}."</p>";
+			}
+			else{
+				$bSect2 = $drivers->{'Best_I2'};
+			}
 		}
-		if ($drivers->{'Best_I3'} == $bestS3Min){	//If a driver's fastest Sector 3 is best overall, color it purple
-			$bSect3 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'Best_I3'}."</p>";
+		if (array_key_exists('Best_I3', $drivers) == FALSE){	//If the Best S3 key doesn't exist, set the printed result to be dashes
+			$bSect3 = "<p style='text-align: center;'>--</p>";
 		}
-		else{
-			$bSect3 = $drivers->{'Best_I3'};
+		else {
+			if ($drivers->{'Best_I3'} == $bestS3Min){	//If a driver's fastest Sector 3 is best overall, color it purple
+				$bSect3 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'Best_I3'}."</p>";
+			}
+			else{
+				$bSect3 = $drivers->{'Best_I3'};
+			}
 		}
 		//Last Sectors
-		if ($drivers->{'I1'} == $bestS1Min){	//If a driver's last lap is best overall, color it purple
+		if ($drivers->{'I1'} == $bestS1Min){	//If a driver's best Sector 1 is best overall, color it purple
 			$lSect1 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'I1'}."</p>";
+		}
+		elseif ($drivers->{'I1'} == $drivers->{'Best_I1'} && $drivers->{'I1'} != $bestS1Min){	//If it's just a personal best, color it green
+			$lSect1 = "<p style='color:green;font-weight:bold;'>".$drivers->{'I1'}."</p>";
 		}
 		else{
 			$lSect1 = $drivers->{'I1'};
 		}
-		if ($drivers->{'I2'} == $bestS2Min){	//If a driver's last lap is best overall, color it purple
+		if ($drivers->{'I2'} == $bestS2Min){	//If a driver's best Sector 2 is best overall, color it purple
 			$lSect2 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'I2'}."</p>";
+		}
+		elseif ($drivers->{'I2'} == $drivers->{'Best_I2'} && $drivers->{'I2'} != $bestS1Min){	//If it's just a personal best, color it green
+			$lSect1 = "<p style='color:green;font-weight:bold;'>".$drivers->{'I2'}."</p>";
 		}
 		else{
 			$lSect2 = $drivers->{'I2'};
 		}
-		if ($drivers->{'I3'} == $bestS3Min){	//If a driver's last lap is best overall, color it purple
+		if ($drivers->{'I3'} == $bestS3Min){	//If a driver's best Sector 3is best overall, color it purple
 			$lSect3 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'I3'}."</p>";
+		}
+		elseif ($drivers->{'I3'} == $drivers->{'Best_I3'} && $drivers->{'I3'} != $bestS1Min){	//If it's just a personal best, color it green
+			$lSect1 = "<p style='color:green;font-weight:bold;'>".$drivers->{'I3'}."</p>";
 		}
 		else{
 			$lSect3 = $drivers->{'I3'};
 		}
-		/*
-		$lSect1			= $drivers->{'I1'};
-		$lSect2			= $drivers->{'I2'};
-		$lSect3			= $drivers->{'I3'};
-		*/
-		if ($event->{'SessionType'} == "R"){ // This should cover racing for all road/street courses
+
+		// This should cover racing for all road/street courses
+		if ($event->{'SessionType'} == "R"){
 			if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's an Indy Lights or ICS race
 				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
 			}
@@ -330,7 +351,8 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
 			}
 		}
-		elseif ($event->{'SessionType'} == "Q"){ // This should cover qualification for all road/street courses
+		// This should cover qualification for all road/street courses
+		elseif ($event->{'SessionType'} == "Q"){
 			if ($position == "7" and preg_match("/\.I/", $event->{'preamble'})){ //optionally: preg_match("/Q.\.I/", $event->{'preamble'})
 				print "<tr><td colspan='100%' style='text-align: center;'>--- TRANSFER CUT OFF ---</td></tr>";
 				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
@@ -339,14 +361,10 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
 			}
 		}
-		else{ //This should cover practice for all road/street courses
+		// This should cover practice for all road/street courses
+		else{
 			print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
 		}
-/*
-		else{ //This should cover practice for all road/street courses
-			print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
-		}
-*/
 	}
 }
 ?>
