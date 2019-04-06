@@ -327,7 +327,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 			$lSect2 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'I2'}."</p>";
 		}
 		elseif ($drivers->{'I2'} == $drivers->{'Best_I2'} && $drivers->{'I2'} != $bestS1Min){	//If it's just a personal best, color it green
-			$lSect1 = "<p style='color:green;font-weight:bold;'>".$drivers->{'I2'}."</p>";
+			$lSect2 = "<p style='color:green;font-weight:bold;'>".$drivers->{'I2'}."</p>";
 		}
 		else{
 			$lSect2 = $drivers->{'I2'};
@@ -336,7 +336,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 			$lSect3 = "<p style='color:purple;font-weight:bold;'>".$drivers->{'I3'}."</p>";
 		}
 		elseif ($drivers->{'I3'} == $drivers->{'Best_I3'} && $drivers->{'I3'} != $bestS1Min){	//If it's just a personal best, color it green
-			$lSect1 = "<p style='color:green;font-weight:bold;'>".$drivers->{'I3'}."</p>";
+			$lSect3 = "<p style='color:green;font-weight:bold;'>".$drivers->{'I3'}."</p>";
 		}
 		else{
 			$lSect3 = $drivers->{'I3'};
