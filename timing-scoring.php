@@ -209,7 +209,7 @@ if ($eventType != "Oval"){	//This only applies for road/street courses
 	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		if(array_key_exists('Best_I2', $drivers)){	//If the key exists in the array (can happen with new sessions)
 			if($drivers->{'Best_I2'} != "0.0000" && $drivers->{'Best_I2'} != ""){
-				$bestS1[] = $drivers->{'Best_I2'};	//Fill the array with completed S2
+				$bestS2[] = $drivers->{'Best_I2'};	//Fill the array with completed S2
 			}
 		}
 	}
@@ -266,7 +266,6 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	elseif ($drivers->{'OverTake_Remain'} <= 59) {
 		$p2pRemain = "<p style='color:red;font-weight:bold;'>".$drivers->{'OverTake_Remain'}."</p>";
 	}
-	//$p2pRemain 		= $drivers->{'OverTake_Remain'};
 	$status			= $drivers->{'status'};
 	switch($drivers->{'Tire'}){
 		case "P": $driverTire = "<p style='font-weight:bold;'>Black</p>"; break;
