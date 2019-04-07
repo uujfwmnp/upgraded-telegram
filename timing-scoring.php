@@ -114,15 +114,12 @@ if ($event->{'SessionType'} == "R") { //If event is a Race. . .
 			<th>Last Lap</th>
 			<th>Gap to Leader</th>
 			<th>Gap Ahead</th>
-			<th>Best S1</th>
-			<th>Best S2</th>
-			<th>Best S3</th>
 			<th>Last S1</th>
 			<th>Last S2</th>
 			<th>Last S3</th>
 			<th>Tire</th>
 			<th>Pit Lap</th>
-			<th>Since Pit</th>
+			<th>Laps Since Pit</th>
 			<th># Stops</th>';
 		if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's a Lights or Indycar Race
 			echo '<th>Push 2 Pass</th>';
@@ -363,7 +360,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		// This should cover racing for all road/street courses
 		if ($event->{'SessionType'} == "R"){
 			if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's an Indy Lights or ICS race
-				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$lastPitLap. "</td><td>" .$lapsSincePit. "</td><td>" .$numPitStops. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
+				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$lastPitLap. "</td><td>" .$lapsSincePit. "</td><td>" .$numPitStops. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
 //				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
 			}
 			else {
