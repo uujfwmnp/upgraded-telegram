@@ -21,7 +21,7 @@ tr:nth-child(even) {
 <div style="overflow-x:auto;">
 <table>
 <?php
-/*
+
 $ch = curl_init();		//Setting up cURL request to pull JSON
 curl_setopt($ch, CURLOPT_URL, "http://racecontrol.indycar.com/xml/timingscoring.json");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -31,13 +31,13 @@ $topTrim    = str_replace("jsonCallback(","",$get);     //Trim top line
 $bottomTrim = str_replace(");","",$topTrim);            //Trim bottom line
 $data       = json_decode($bottomTrim);                 //Load formatted string as JSON data
 $event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
-*/
-//DEBUG
 
+//DEBUG
+/*
 $get        = file_get_contents("JSON-RC-Race.txt");
 $data       = json_decode($get);		//Load local data file as JSON data
 $event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
-
+*/
 
 //On the chance that the JSON is broke, T&S formatting has changed, or something else exploded, just stop the script.
 if(array_key_exists('trackType', $event) == FALSE or array_key_exists('preamble', $event) == FALSE ){
