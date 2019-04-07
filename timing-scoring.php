@@ -8,6 +8,7 @@ body {
 table {
   border-collapse: collapse;
   width: 100%;
+  font-size: 1em;
 }
 table, th, td {
   border: 1px solid black;
@@ -20,7 +21,7 @@ tr:nth-child(even) {
 <div style="overflow-x:auto;">
 <table>
 <?php
-
+/*
 $ch = curl_init();		//Setting up cURL request to pull JSON
 curl_setopt($ch, CURLOPT_URL, "http://racecontrol.indycar.com/xml/timingscoring.json");
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
@@ -30,13 +31,13 @@ $topTrim    = str_replace("jsonCallback(","",$get);     //Trim top line
 $bottomTrim = str_replace(");","",$topTrim);            //Trim bottom line
 $data       = json_decode($bottomTrim);                 //Load formatted string as JSON data
 $event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
-
+*/
 //DEBUG
-/*
-$get        = file_get_contents("JSON-SC-Qual.txt");
+
+$get        = file_get_contents("JSON-RC-Race.txt");
 $data       = json_decode($get);		//Load local data file as JSON data
 $event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
-*/
+
 
 //On the chance that the JSON is broke, T&S formatting has changed, or something else exploded, just stop the script.
 if(array_key_exists('trackType', $event) == FALSE or array_key_exists('preamble', $event) == FALSE ){
@@ -107,7 +108,7 @@ if ($event->{'SessionType'} == "R") { //If event is a Race. . .
 	if ($eventType != "Oval") { //If track *is not* an Oval. . .
 		echo '		<thead>
 		<tr>
-			<th style="width: 5%;">Position</th>
+			<th style="width: 4%;">Position</th>
 			<th>Driver</th>
 			<th>Car</th>
 			<th>Last Lap</th>
@@ -119,9 +120,12 @@ if ($event->{'SessionType'} == "R") { //If event is a Race. . .
 			<th>Last S1</th>
 			<th>Last S2</th>
 			<th>Last S3</th>
-			<th>Tire</th>';
+			<th>Tire</th>
+			<th>Pit Lap</th>
+			<th>Since Pit</th>
+			<th># Stops</th>';
 		if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's a Lights or Indycar Race
-			echo '<th>Push 2 Pass Remaining</th>';
+			echo '<th>Push 2 Pass</th>';
 		}
 		echo '	<th>Status</th>
 		</tr>
@@ -130,12 +134,15 @@ if ($event->{'SessionType'} == "R") { //If event is a Race. . .
 	else { //If track IS an Oval. . .
 		echo '		<thead>
 		<tr>
-			<th style="width: 5%;">Position</th>
+			<th style="width: 4%;">Position</th>
 			<th>Driver</th>
 			<th>Car</th>
 			<th>Last Lap</th>
 			<th>Gap to Leader</th>
 			<th>Gap Ahead</th>
+			<th>Last Pit</th>
+			<th>Laps Since Pit</th>
+			<th># Stops</th>
 			<th>Status</th>
 		</tr>
 	</thead>';
@@ -145,7 +152,7 @@ else { //If event *is not* a Race. . .
 	if ($eventType != "Oval") { //If track *is not* an Oval. . .
 		echo '		<thead>
 	<tr>
-		<th style="width: 5%;">Position</th>
+		<th style="width: 4%;">Position</th>
 		<th>Driver</th>
 		<th>Car</th>
 		<th>Last Lap</th>
@@ -164,7 +171,7 @@ else { //If event *is not* a Race. . .
 	else { //If track IS an Oval. . .
 		echo '		<thead>
 		<tr>
-			<th style="width: 5%;">Position</th>
+			<th style="width: 4%;">Position</th>
 			<th>Driver</th>
 			<th>Car</th>
 			<th>Last Lap</th>
@@ -186,7 +193,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	}
 }
 if($bestLap != NULL){	//If the array is not empty
-	$bestMin = min($bestLap);	//Locate the fastest lap
+	$bestLapMin = min($bestLap);	//Locate the fastest lap
 }
 
 //Driver Tables: Best Sectors
@@ -237,16 +244,21 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	$driverName 	= $drivers->{'lastName'};
 	$carNum 		= $drivers->{'no'};
 	$team 			= $drivers->{'team'};
-	if ($drivers->{'bestLapTime'} == $bestMin){	//If a driver's fastest lap is best overall, color it purple
+	$driverComment	= $drivers->{'comment'};
+	$lastPitLap		= $drivers->{'lastPitLap'};
+	$lapsSincePit	= $drivers->{'sincePitLap'};
+	$numPitStops	= $drivers->{'pitStops'};
+	
+	if ($drivers->{'bestLapTime'} == $bestLapMin){	//If a driver's fastest lap is best overall, color it purple
 		$bestLapTime = "<p style='color:purple;font-weight:bold;'>".$drivers->{'bestLapTime'}."</p>";
 	}
 	else{
 		$bestLapTime = $drivers->{'bestLapTime'};
 	}
-	if ($drivers->{'lastLapTime'} == $bestMin){	//If a driver's last lap is best overall, color it purple
+	if ($drivers->{'lastLapTime'} == $bestLapMin){	//If a driver's last lap is best overall, color it purple
 		$lastLapTime = "<p style='color:purple;font-weight:bold;'>".$drivers->{'lastLapTime'}."</p>";
 	}
-	if ($drivers->{'lastLapTime'} == $drivers->{'bestLapTime'} && $drivers->{'lastLapTime'} != $bestMin){	//If a driver's last lap is their personal best, color it green
+	if ($drivers->{'lastLapTime'} == $drivers->{'bestLapTime'} && $drivers->{'lastLapTime'} != $bestLapMin){	//If a driver's last lap is their personal best, color it green
 		$lastLapTime = "<p style='color:green;font-weight:bold;'>".$drivers->{'lastLapTime'}."</p>";
 	}
 	if ($drivers->{'lastLapTime'} == "0.0000"){
@@ -276,7 +288,8 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	//Oval
 	if ($eventType == "Oval"){
 		if ($event->{'SessionType'} == "R"){
-			print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$status. "</td></tr>";
+			print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$lastPitLap. "</td><td>" .$lapsSincePit. "</td><td>" .$numPitStops. "</td><td>" .$status. "</td></tr>";
+//			print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$status. "</td></tr>";
 		}
 		else{ //Practice or Qualifying
 			print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$bestLapTime. "</td><td>" .$status. "</td></tr>";
@@ -350,7 +363,8 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		// This should cover racing for all road/street courses
 		if ($event->{'SessionType'} == "R"){
 			if (preg_match("/\.I|.L/", $event->{'preamble'})) {	//If it's an Indy Lights or ICS race
-				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
+				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$lastPitLap. "</td><td>" .$lapsSincePit. "</td><td>" .$numPitStops. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
+//				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$bSect1. "</td><td>" .$bSect2. "</td><td>" .$bSect3. "</td><td>" .$lSect1. "</td><td>" .$lSect2. "</td><td>" .$lSect3. "</td><td>" .$driverTire. "</td><td>" .$p2pRemain. "</td><td>" .$status. "</td></tr>";
 			}
 			else {
 				print "<tr><td>" .$position. "</td><td>" .$driverName. "</td><td>" .$carNum. "</td><td>" .$lastLapTime. "</td><td>" .$diff2Lead. "</td><td>" .$gapAhead. "</td><td>" .$driverTire. "</td><td>" .$status. "</td></tr>";
