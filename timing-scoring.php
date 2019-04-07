@@ -80,7 +80,7 @@ else{
 	$eventSession = "Race";
 }
 
-print "<tr><td style='font-weight:bold; width:10%;'>Race Name:</td><td>" . $event->{'eventName'} . "</td></tr>";
+print "<tr><td style='font-weight:bold; width:12%;'>Race Name:</td><td>" . $event->{'eventName'} . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Track Name:</td><td>" . $event->{'trackName'} . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Session:</td><td>" . $eventSession . "</td></tr>";
 print "<tr><td style='font-weight:bold;'>Status:</td><td>" . $eventFlag . "</td></tr>";
@@ -107,7 +107,7 @@ if ($event->{'SessionType'} == "R") { //If event is a Race. . .
 	if ($eventType != "Oval") { //If track *is not* an Oval. . .
 		echo '		<thead>
 		<tr>
-			<th>Position</th>
+			<th style="width: 5%;">Position</th>
 			<th>Driver</th>
 			<th>Car</th>
 			<th>Last Lap</th>
@@ -130,7 +130,7 @@ if ($event->{'SessionType'} == "R") { //If event is a Race. . .
 	else { //If track IS an Oval. . .
 		echo '		<thead>
 		<tr>
-			<th>Position</th>
+			<th style="width: 5%;">Position</th>
 			<th>Driver</th>
 			<th>Car</th>
 			<th>Last Lap</th>
@@ -145,7 +145,7 @@ else { //If event *is not* a Race. . .
 	if ($eventType != "Oval") { //If track *is not* an Oval. . .
 		echo '		<thead>
 	<tr>
-		<th>Position</th>
+		<th style="width: 5%;">Position</th>
 		<th>Driver</th>
 		<th>Car</th>
 		<th>Last Lap</th>
@@ -164,7 +164,7 @@ else { //If event *is not* a Race. . .
 	else { //If track IS an Oval. . .
 		echo '		<thead>
 		<tr>
-			<th>Position</th>
+			<th style="width: 5%;">Position</th>
 			<th>Driver</th>
 			<th>Car</th>
 			<th>Last Lap</th>
@@ -194,8 +194,10 @@ if ($eventType != "Oval"){	//This only applies for road/street courses
 	//Best Sector 1
 	$bestS1 = array();	//Setup an empty array to strip out uncompleted S1
 	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
-		if($drivers->{'Best_I1'} != "0.0000"){
-			$bestS1[] = $drivers->{'Best_I1'};	//Fill the array with completed S1
+		if(array_key_exists('Best_I1', $drivers)){	//If the key exists in the array (can happen with new sessions)
+			if($drivers->{'Best_I1'} != "0.0000" && $drivers->{'Best_I1'} != ""){
+				$bestS1[] = $drivers->{'Best_I1'};	//Fill the array with completed S1
+			}
 		}
 	}
 	if($bestS1 != NULL){
@@ -205,8 +207,10 @@ if ($eventType != "Oval"){	//This only applies for road/street courses
 	//Best Sector 2
 	$bestS2 = array();	//Setup an empty array to strip out uncompleted S2
 	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
-		if($drivers->{'Best_I2'} != "0.0000"){
-			$bestS2[] = $drivers->{'Best_I2'};	//Fill the array with completed S2
+		if(array_key_exists('Best_I2', $drivers)){	//If the key exists in the array (can happen with new sessions)
+			if($drivers->{'Best_I2'} != "0.0000" && $drivers->{'Best_I2'} != ""){
+				$bestS1[] = $drivers->{'Best_I2'};	//Fill the array with completed S2
+			}
 		}
 	}
 	if($bestS2 != NULL){
@@ -216,8 +220,10 @@ if ($eventType != "Oval"){	//This only applies for road/street courses
 	//Best Sector 3
 	$bestS3 = array();	//Setup an empty array to strip out uncompleted S3
 	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
-		if($drivers->{'Best_I3'} != "0.0000"){
-			$bestS3[] = $drivers->{'Best_I3'};	//Fill the array with completed S3
+		if(array_key_exists('Best_I3', $drivers)){	//If the key exists in the array (can happen with new sessions)
+			if($drivers->{'Best_I3'} != "0.0000" && $drivers->{'Best_I3'} != ""){
+				$bestS3[] = $drivers->{'Best_I3'};	//Fill the array with completed S3
+			}
 		}
 	}
 	if($bestS3 != NULL){
@@ -280,7 +286,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	//Road Course/Street Course
 	else{
 		//Best Sectors
-		if (array_key_exists('Best_I1', $drivers) == FALSE){	//If the Best S1 key doesn't exist, set the printed result to be dashes
+		if (array_key_exists('Best_I1', $drivers) == FALSE || $drivers->{'Best_I1'} == ""){	//If the Best S1 key doesn't exist, set the printed result to be dashes
 			$bSect1 = "<p style='text-align: center;'>--</p>";
 		}
 		else {
@@ -291,7 +297,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 				$bSect1 = $drivers->{'Best_I1'};
 			}
 		}
-		if (array_key_exists('Best_I2', $drivers) == FALSE){	//If the Best S2 key doesn't exist, set the printed result to be dashes
+		if (array_key_exists('Best_I2', $drivers) == FALSE || $drivers->{'Best_I2'} == ""){	//If the Best S2 key doesn't exist, set the printed result to be dashes
 			$bSect2 = "<p style='text-align: center;'>--</p>";
 		}
 		else {
@@ -302,7 +308,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 				$bSect2 = $drivers->{'Best_I2'};
 			}
 		}
-		if (array_key_exists('Best_I3', $drivers) == FALSE){	//If the Best S3 key doesn't exist, set the printed result to be dashes
+		if (array_key_exists('Best_I3', $drivers) == FALSE || $drivers->{'Best_I3'} == ""){	//If the Best S3 key doesn't exist, set the printed result to be dashes
 			$bSect3 = "<p style='text-align: center;'>--</p>";
 		}
 		else {
