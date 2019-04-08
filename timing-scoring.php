@@ -1,6 +1,50 @@
 <html>
 <head>
-<meta http-equiv="refresh" content="30">
+<?php
+
+$ch = curl_init();		//Setting up cURL request to pull JSON
+curl_setopt($ch, CURLOPT_URL, "http://racecontrol.indycar.com/xml/timingscoring.json");
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$get = curl_exec($ch);	//Pull data from ICS
+curl_close($ch);		//Close cURL request
+$topTrim    = str_replace("jsonCallback(","",$get);     //Trim top line
+$bottomTrim = str_replace(");","",$topTrim);            //Trim bottom line
+$data       = json_decode($bottomTrim);                 //Load formatted string as JSON data
+$event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
+
+//DEBUG
+/*
+$get        = file_get_contents("JSON-RC-Race.txt");
+$data       = json_decode($get);		//Load local data file as JSON data
+$event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
+*/
+//On the chance that the JSON is broke, T&S formatting has changed, or something else exploded, just stop the script.
+if(array_key_exists('trackType', $event) == FALSE or array_key_exists('preamble', $event) == FALSE ){
+	exit("Invalid T&S data received.");
+}
+if($event->{'currentFlag'} == "COLD"){
+	print('<meta http-equiv="refresh" content="60">');
+}
+else{
+	if ($event->{'SessionType'} == "Q"){
+		print('<meta http-equiv="refresh" content="20">');
+	}
+	elseif ($event->{'SessionType'} == "R"){
+		if($event->{'currentFlag'} == "YELLOW"){
+			print('<meta http-equiv="refresh" content="20">');
+		}
+		else{
+			print('<meta http-equiv="refresh" content="10">');
+		}
+	}
+	else{
+		print('<meta http-equiv="refresh" content="30">');
+	}
+}
+
+
+?>
+
 <style>
 body {
   font-family: sans-serif;
@@ -21,29 +65,6 @@ tr:nth-child(even) {
 <div style="overflow-x:auto;">
 <table>
 <?php
-
-$ch = curl_init();		//Setting up cURL request to pull JSON
-curl_setopt($ch, CURLOPT_URL, "http://racecontrol.indycar.com/xml/timingscoring.json");
-curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-$get = curl_exec($ch);	//Pull data from ICS
-curl_close($ch);		//Close cURL request
-$topTrim    = str_replace("jsonCallback(","",$get);     //Trim top line
-$bottomTrim = str_replace(");","",$topTrim);            //Trim bottom line
-$data       = json_decode($bottomTrim);                 //Load formatted string as JSON data
-$event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
-
-//DEBUG
-/*
-$get        = file_get_contents("JSON-RC-Race.txt");
-$data       = json_decode($get);		//Load local data file as JSON data
-$event      = $data->{'timing_results'}->{'heartbeat'}; //Setup $event variable
-*/
-
-//On the chance that the JSON is broke, T&S formatting has changed, or something else exploded, just stop the script.
-if(array_key_exists('trackType', $event) == FALSE or array_key_exists('preamble', $event) == FALSE ){
-	exit("Invalid T&S data received.");
-}
-
 //Event Type
 switch($event->{'trackType'}){
 	case "O": $eventType = "Oval"; break;
