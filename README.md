@@ -14,7 +14,7 @@ Comment Bot &amp; Other Racing Stuff
   - Locally running comment script, prints to the screen.
 * timing-scoring.php
   - T&S webpage script that runs on a varying page refresh timer, depending on session.
-  - Includes color formatting for flags (red/yellow/green), push 2 pass, tire choices, overall fastest lap times, and overall best sector times.
+  - Includes color formatting for flags (red/yellow/green), push 2 pass, tire choices, lap times, and sector times.
   - Next major update will support IMS with stuff like no tow laps, speed averages, etc.
 * timing-scoring.py
   - Locally running T&S script, prints to the screen.
