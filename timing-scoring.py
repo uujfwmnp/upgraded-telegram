@@ -125,13 +125,17 @@ def event():
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Lead Gap:  ", "Gap Ahead: ", "Status:")
             else:
                 if (eventType != "Oval"): # Road/Street
-                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Tire:  ", "Status:")                    
+                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Tire:  ", "Status:")
+                elif (event['trackType'] == "I" and  event['SessionType'] == "P"):
+                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Last Speed:", "Best Speed:", "Avg Speed: ", "No-Tow Lap:", "No-Tow Rank:", "Status:")
                 else: #if (eventType == "Oval"):
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Status:")
 
             # Driver Variable Array
             for i in range(0, len(drivers)):
                 position = drivers[i]['rank']
+                if (len(drivers[i]['lastName']) >= 13):
+                    driverName = drivers[i]['lastName'] + "\t"
                 if (len(drivers[i]['lastName']) >= 12):
                     driverName = drivers[i]['lastName'] + " \t"
                 elif (len(drivers[i]['lastName']) <= 4):
@@ -146,10 +150,33 @@ def event():
                 gapAhead = drivers[i]['gap'] + gapSpacing(len(drivers[i]['gap']))
                 p2pRemain = drivers[i]['OverTake_Remain'] + p2pSpacing(len(drivers[i]['OverTake_Remain']))
                 driverTire = tires(drivers[i]['Tire'])
+                if (event['trackType'] == "I"):
+                    if ('AverageSpeed' not in event.keys()):
+                        avgSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
+                    else:
+                        avgSpeed   = drivers[i]['AverageSpeed'] + gapSpacing(len(drivers[i]['AverageSpeed']))
+                    if ('BestSpeed' not in event.keys()):
+                        bestSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
+                    else:
+                        bestSpeed   = drivers[i]['BestSpeed'] + gapSpacing(len(drivers[i]['BestSpeed']))
+
+                    if ('LastSpeed' not in event.keys()):
+                        lastSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
+                    else:
+                        lastSpeed   = drivers[i]['LastSpeed'] + gapSpacing(len(drivers[i]['LastSpeed']))
+                    if ('NTRank' not in event.keys()):
+                        ntRank   = "0\t     "
+                    else:
+                        ntRank     = drivers[i]['NTRank'] + "\t     "
+                    ntBestTime = drivers[i]['NTBestTime'] + gapSpacing(len(drivers[i]['NTBestTime']))
 #Oval
                 if (eventType == "Oval"):
                     if (event['SessionType'] == "R"):
                         print (position, "\t  ", driverName, carNum, "\t", lastLapTime, diff2Lead, gapAhead, drivers[i]['status'])
+                    elif(event['trackType'] == "I" and event['SessionType'] == "P"):
+                        print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, lastSpeed, bestSpeed, avgSpeed, ntBestTime, ntRank, drivers[i]['status'])
+                    elif(event['trackType'] == "I" and event['SessionType'] == "Q"):
+                        print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, avgSpeed, drivers[i]['status'])
                     else: #(event['SessionType'] == "Q" or event['SessionType'] == "P")):
                         print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, drivers[i]['status'])
 #Road Course/Street Course
