@@ -151,20 +151,19 @@ def event():
                 p2pRemain = drivers[i]['OverTake_Remain'] + p2pSpacing(len(drivers[i]['OverTake_Remain']))
                 driverTire = tires(drivers[i]['Tire'])
                 if (event['trackType'] == "I"):
-                    if ('AverageSpeed' not in event.keys()):
+                    if ('AverageSpeed' not in drivers[i].keys()):
                         avgSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
                     else:
                         avgSpeed   = drivers[i]['AverageSpeed'] + gapSpacing(len(drivers[i]['AverageSpeed']))
-                    if ('BestSpeed' not in event.keys()):
+                    if ('BestSpeed' not in drivers[i].keys()):
                         bestSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
                     else:
                         bestSpeed   = drivers[i]['BestSpeed'] + gapSpacing(len(drivers[i]['BestSpeed']))
-
-                    if ('LastSpeed' not in event.keys()):
+                    if ('LastSpeed' not in drivers[i].keys()):
                         lastSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
                     else:
                         lastSpeed   = drivers[i]['LastSpeed'] + gapSpacing(len(drivers[i]['LastSpeed']))
-                    if ('NTRank' not in event.keys()):
+                    if ('NTRank' not in drivers[i].keys()):
                         ntRank   = "0\t     "
                     else:
                         ntRank     = drivers[i]['NTRank'] + "\t     "
