@@ -85,7 +85,8 @@ def gapSpacing(length):
         6: "     ",
         7: "    ",
         8: "   ",
-        9: "  "
+        9: "  ",
+        10:" ",
     }
     result = switcher.get(length, "  ")
     return result
