@@ -81,6 +81,7 @@ def lapSpacing(length):
     return result
 def gapSpacing(length):
     switcher = {
+        5: "      ",
         6: "     ",
         7: "    ",
         8: "   ",
@@ -127,7 +128,7 @@ def event():
                 if (eventType != "Oval"): # Road/Street
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Tire:  ", "Status:")
                 elif (event['trackType'] == "I" and  event['SessionType'] == "P"):
-                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Last Speed:", "Best Speed:", "Avg Speed: ", "No-Tow Lap:", "No-Tow Rank:", "Status:")
+                    print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Last Speed:", "Best Speed:", "Avg Speed: ", "NT Lap:    ", "NT Speed:  ", "NT Rank:", "Status:")
                 else: #if (eventType == "Oval"):
                     print ("Position: ", "Driver: \t\t", "Car:\t", "Last Lap:  ", "Best Lap:  ", "Status:")
 
@@ -152,17 +153,21 @@ def event():
                 driverTire = tires(drivers[i]['Tire'])
                 if (event['trackType'] == "I"):
                     if ('AverageSpeed' not in drivers[i].keys()):
-                        avgSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
+                        avgSpeed   = "00.0000" + gapSpacing(len("00.0000"))
                     else:
                         avgSpeed   = drivers[i]['AverageSpeed'] + gapSpacing(len(drivers[i]['AverageSpeed']))
                     if ('BestSpeed' not in drivers[i].keys()):
-                        bestSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
+                        bestSpeed   = "00.0000" + gapSpacing(len("00.0000"))
                     else:
                         bestSpeed   = drivers[i]['BestSpeed'] + gapSpacing(len(drivers[i]['BestSpeed']))
                     if ('LastSpeed' not in drivers[i].keys()):
-                        lastSpeed   = "-0.0001" + gapSpacing(len("-0.0001"))
+                        lastSpeed   = "00.0000" + gapSpacing(len("00.0000"))
                     else:
                         lastSpeed   = drivers[i]['LastSpeed'] + gapSpacing(len(drivers[i]['LastSpeed']))
+                    if ('NTBestSpeed' not in drivers[i].keys()):
+                        ntBestSpeed   = "000.000" + gapSpacing(len("-0.0001"))
+                    else:
+                        ntBestSpeed   = drivers[i]['NTBestSpeed'] + gapSpacing(len(drivers[i]['NTBestSpeed']))
                     if ('NTRank' not in drivers[i].keys()):
                         ntRank   = "0\t     "
                     else:
@@ -173,7 +178,7 @@ def event():
                     if (event['SessionType'] == "R"):
                         print (position, "\t  ", driverName, carNum, "\t", lastLapTime, diff2Lead, gapAhead, drivers[i]['status'])
                     elif(event['trackType'] == "I" and event['SessionType'] == "P"):
-                        print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, lastSpeed, bestSpeed, avgSpeed, ntBestTime, ntRank, drivers[i]['status'])
+                        print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, lastSpeed, bestSpeed, avgSpeed, ntBestTime, ntBestSpeed, ntRank, drivers[i]['status'])
                     elif(event['trackType'] == "I" and event['SessionType'] == "Q"):
                         print (position, "\t  ", driverName, carNum, "\t", lastLapTime, bestLapTime, avgSpeed, drivers[i]['status'])
                     else: #(event['SessionType'] == "Q" or event['SessionType'] == "P")):
