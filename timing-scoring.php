@@ -54,6 +54,16 @@ table {
 table, th, td {
   border: 1px solid black;
 }
+.sessionbest{
+	background-color:purple;
+	color:white;
+	font-weight:bold
+}
+.personalbest{
+	background-color:purple;
+	color:white;
+	font-weight:bold
+}
 th.fitwidth {
     width: 1px;
     white-space: nowrap;
@@ -83,7 +93,7 @@ switch($event->{'currentFlag'}){
 }
 //Session Type
 if ($event->{'SessionType'} == 'Q'){
-	if ($eventType != 'Oval'){ //Qualifying for Road/Street
+	if ($eventType != 'Oval' && $eventType != 'Indy500'){ //Qualifying for Road/Street
 		switch($event->{'preamble'}){
 			case 'Q1.I': $eventSession = 'Qualifying Round 1 Group 1'; break;
 			case 'Q2.I': $eventSession = 'Qualifying Round 1 Group 2'; break;
@@ -127,7 +137,7 @@ if ($eventSession == 'Race'){
 <table>
 <?php
 if ($event->{'SessionType'} == 'R') { //If event is a Race. . . 
-	if ($eventType != 'Oval') { //If track *is not* an Oval. . .
+	if ($eventType != 'Oval' && $eventType != 'Indy500') { //If track *is not* an Oval. . .
 		echo '		<thead>
 		<tr>
 			<th class="fitwidth">Pos</th>
@@ -190,7 +200,7 @@ else { //If event *is not* a Race. . .
 	</tr>
 </thead>';
 	}
-	elseif ($eventType == "Indy500") { //If track IS Indy 500. . .
+	elseif ($eventType == "Indy500") { //If track IS Indy Oval. . .
 		echo '		<thead>
 		<tr>
 			<th style="width: 2%;">Pos</th>
@@ -208,7 +218,7 @@ else { //If event *is not* a Race. . .
 		</tr>
 	</thead>';
 	}
-	else { //If track IS an Oval. . .
+	else { //If track IS a non-Indy Oval. . .
 		echo '		<thead>
 		<tr>
 			<th style="width: 2%;">Pos</th>
@@ -235,6 +245,27 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 if($bestLap != NULL){	//If the array is not empty
 	$bestLapMin = min($bestLap);	//Locate the fastest lap
 }
+
+//Driver Tables: Speeds (Indy 500 only)
+if ($eventType == 'Indy500'){
+	$bSpeedArray = array();	//Setup an empty array for best lap speed
+	$ntBSpeedArray = array();	//Setup an empty array for best no-tow lap speed
+	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
+		if(array_key_exists('BestSpeed', $drivers)){ //If the key exists in the array (can happen with new sessions)
+			$bSpeedArray[] = $drivers->{'BestSpeed'};	 //Fill the array
+		}
+		if(array_key_exists('NTBestSpeed', $drivers)){ //If the key exists in the array (can happen with new sessions)
+			$ntBSpeedArray[] = $drivers->{'NTBestSpeed'};	 //Fill the array
+		}
+	}
+	if($bSpeedArray != NULL){	//If the array is not empty
+		$bestSpeedMax = max($bSpeedArray);	//Locate the fastest speed
+	}
+	if($ntBSpeedArray != NULL){	//If the array is not empty
+		$ntBestSpeedMax = max($ntBSpeedArray);	//Locate the fastest speed
+	}
+}
+
 
 //Driver Tables: Best Sectors
 if ($eventType != 'Oval'){	//This only applies for road/street courses
@@ -289,17 +320,19 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	$lapsSincePit	= $drivers->{'sincePitLap'};
 	$numPitStops	= $drivers->{'pitStops'};
 	
+	//Color Formatting: Best Lap Time
 	if ($drivers->{'bestLapTime'} == $bestLapMin){	//If a driver's fastest lap is best overall, color it purple
-		$bestLapTime = '<p style="color:purple;font-weight:bold;">'.$drivers->{'bestLapTime'}.'</p>';
+		$bestLapTime = '<p class="sessionbest">'.$drivers->{'bestLapTime'}.'</p>';
 	}
 	else{
 		$bestLapTime = $drivers->{'bestLapTime'};
 	}
+	//Color Formatting: Last Lap Time
 	if ($drivers->{'lastLapTime'} == $bestLapMin){	//If a driver's last lap is best overall, color it purple
-		$lastLapTime = '<p style="color:purple;font-weight:bold;">'.$drivers->{'lastLapTime'}.'</p>';
+		$lastLapTime = '<p class="sessionbest">'.$drivers->{'lastLapTime'}.'</p>';
 	}
 	if ($drivers->{'lastLapTime'} == $drivers->{'bestLapTime'} && $drivers->{'lastLapTime'} != $bestLapMin){	//If a driver's last lap is their personal best, color it green
-		$lastLapTime = '<p style="color:green;font-weight:bold;">'.$drivers->{'lastLapTime'}.'</p>';
+		$lastLapTime = '<p class="personalbest">'.$drivers->{'lastLapTime'}.'</p>';
 	}
 	if ($drivers->{'lastLapTime'} == '0.0000'){
 		$lastLapTime = $drivers->{'lastLapTime'};
@@ -307,8 +340,28 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	else{
 		$lastLapTime = $drivers->{'lastLapTime'};
 	}
-	$diff2Lead 		= $drivers->{'diff'};
-	$gapAhead 		= $drivers->{'gap'};
+
+	//Color Formatting: Best Lap Speed (Indy Only)
+	if ($drivers->{'BestSpeed'} == $bestSpeedMax){	//If a driver's fastest lap speed is best overall, color it purple
+		$bestSpeed = '<p class="sessionbest">'.$drivers->{'BestSpeed'}.'</p>';
+	}
+	else{
+		$bestSpeed = $drivers->{'BestSpeed'};
+	}
+	//Color Formatting: Best No-Tow Lap Speed
+	if (array_key_exists('NTBestSpeed', $drivers)){
+		if ($drivers->{'NTBestSpeed'} == $ntBestSpeedMax){	//If a driver's fastest no-tow lap speed is best overall, color it purple
+			$ntBestSpeed = '<p class="sessionbest">'.$drivers->{'NTBestSpeed'}.'</p>';
+		}
+		else{
+			$ntBestSpeed = $drivers->{'NTBestSpeed'};
+		}
+	}
+	else{
+		$ntBestSpeed = "000.000";
+	}
+
+	//Color Formatting: Overtake/Push to Pass
 	if ($drivers->{'OverTake_Remain'} >= 100){
 		$p2pRemain = '<p style="color:green;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
 	}
@@ -318,6 +371,8 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	elseif ($drivers->{'OverTake_Remain'} <= 59) {
 		$p2pRemain = '<p style="color:red;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
 	}
+	$diff2Lead 		= $drivers->{'diff'};
+	$gapAhead 		= $drivers->{'gap'};
 	$status			= $drivers->{'status'};
 	switch($drivers->{'Tire'}){
 		case 'P': $driverTire = '<p style="font-weight:bold;">B</p>'; break;
@@ -327,9 +382,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	}
 	if ($eventType == "Indy500"){
 		$avgSpeed    = $drivers->{'AverageSpeed'};
-		$bestSpeed   = $drivers->{'BestSpeed'};
 		$lastSpeed   = $drivers->{'LastSpeed'};
-		$ntBestSpeed = $drivers->{'NTBestSpeed'};
 		$ntRank      = $drivers->{'NTRank'};
 		$ntBestTime  = $drivers->{'NTBestTime'};
 	}
