@@ -49,7 +49,7 @@ body {
 table {
   border-collapse: collapse;
   width: 100%;
-  font-size: 1em;
+  font-size: 0.9em;
 }
 table, th, td {
   border: 1px solid black;
@@ -63,6 +63,26 @@ table, th, td {
 	background-color:purple;
 	color:white;
 	font-weight:bold
+}
+.green{
+	background-color:green;
+	color:white;
+	font-weight:bold;
+}
+.yellow{
+	background-color:orange;
+	color:white;
+	font-weight:bold;
+}
+.red{
+	background-color:red;
+	color:white;
+	font-weight:bold;
+}
+.cold{
+	background-color:blue;
+	color:white;
+	font-weight:bold;
 }
 th.fitwidth {
     width: 1px;
@@ -86,10 +106,10 @@ switch($event->{'trackType'}){
 }
 //Status Type
 switch($event->{'currentFlag'}){
-	case 'GREEN': $eventFlag ='<p style="color:green;font-weight:bold;">GREEN</p>'; break;
-	case 'YELLOW': $eventFlag = '<p style="color:orange;font-weight:bold;">YELLOW</p>'; break;
-	case 'RED': $eventFlag = '<p style="color:red;font-weight:bold;">RED</p>'; break;
-	default: $eventFlag = 'COLD (no track activity)'; break;
+	case 'GREEN': $eventFlag ='<td class="green" rowspan="2">GREEN'; break;
+	case 'YELLOW': $eventFlag = '<td class="yellow" rowspan="2">YELLOW'; break;
+	case 'RED': $eventFlag = '<td class="red" rowspan="2">RED'; break;
+	default: $eventFlag = '<td class="cold" rowspan="2">COLD (no track activity)'; break;
 }
 //Session Type
 if ($event->{'SessionType'} == 'Q'){
@@ -112,18 +132,17 @@ elseif ($event->{'SessionType'} == 'P'){
 else{
 	$eventSession = 'Race';
 }
-
-print '<tr><td style="font-weight:bold; width:12%;">Race Name:</td><td>' . $event->{'eventName'} . '</td></tr>';
+print '<tr><td style="font-weight:bold;width:12%;">Race Name:</td><td style="width:30%;">' . $event->{'eventName'} . '</td>';
+print '<td style="font-weight:bold;width:8%;" rowspan="2">Status:</td>' . $eventFlag . '</td></tr>';
 print '<tr><td style="font-weight:bold;">Track Name:</td><td>' . $event->{'trackName'} . '</td></tr>';
-print '<tr><td style="font-weight:bold;">Session:</td><td>' . $eventSession . '</td></tr>';
-print '<tr><td style="font-weight:bold;">Status:</td><td>' . $eventFlag . '</td></tr>';
+print '<tr><td style="font-weight:bold;">Session:</td><td>' . $eventSession . '</td>';
 if (array_key_exists('overallTimeToGo', $event) == FALSE){
-	print '<tr><td style="font-weight:bold;">Elapsed Time:</td><td>' . $event->{'elapsedTime'};	// Qual/Race will show elapsed time
+	print '<td style="font-weight:bold;">Elapsed Time:</td><td>' . $event->{'elapsedTime'} . '</td></tr>';	// Qual/Race will show elapsed time
 }
 else{
-	print '<tr><td style="font-weight:bold;">Time Left:</td><td>' . $event->{'overallTimeToGo'};	// Practice will show time remaining. This may also occur during timed races, not sure
+	print '<td style="font-weight:bold;">Time Left:</td><td>' . $event->{'overallTimeToGo'} . '</td></tr>';	// Practice will show time remaining. This may also occur during timed races, not sure
 }
-print '<tr><td style="font-weight:bold;">Comment:</td><td>' . $event->{'Comment'} . '</td></tr>';
+print '<tr><td style="font-weight:bold;">Comment:</td><td colspan="3">' . $event->{'Comment'} . '</td></tr>';
 if ($eventSession == 'Race'){
 	if (array_key_exists('totalLaps', $event)){
 		print '<tr><td style="font-weight:bold;">Lap:</td><td>' . $event->{'lapNumber'} . ' of ' . $event->{'totalLaps'} . '</td></tr>';
@@ -200,17 +219,24 @@ else { //If event *is not* a Race. . .
 	</tr>
 </thead>';
 	}
-	elseif ($eventType == "Indy500") { //If track IS Indy Oval. . .
+	elseif ($eventType == "Indy500") { //If track IS the Indy Oval. . .
 		echo '		<thead>
 		<tr>
 			<th style="width: 2%;">Pos</th>
 			<th>Driver</th>
 			<th>Car</th>
 			<th>Last Lap</th>
-			<th>Best Lap</th>
 			<th>Last Speed</th>
+			<th>T1</th>
+			<th>T2</th>
+			<th>T3</th>
+			<th>T4</th>
+			<th>Best Lap</th>
 			<th>Best Speed</th>
-			<th>Average Speed</th>
+			<th>Best T1</th>
+			<th>Best T2</th>
+			<th>Best T3</th>
+			<th>Best T4</th>
 			<th>No-Tow Lap</th>
 			<th>No-Tow Speed</th>
 			<th>No Tow Rank</th>
@@ -248,14 +274,30 @@ if($bestLap != NULL){	//If the array is not empty
 
 //Driver Tables: Speeds (Indy 500 only)
 if ($eventType == 'Indy500'){
-	$bSpeedArray = array();	//Setup an empty array for best lap speed
-	$ntBSpeedArray = array();	//Setup an empty array for best no-tow lap speed
+	$bSpeedArray = array();   //Setup an empty array for best lap speed
+	$ntBSpeedArray = array(); //Setup an empty array for best no-tow lap speed
+	$bestT1Array = array();   //vvv Arrays for best T1-T4 trap speeds vvv
+	$bestT2Array = array();
+	$bestT3Array = array();
+	$bestT4Array = array();
 	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		if(array_key_exists('BestSpeed', $drivers)){ //If the key exists in the array (can happen with new sessions)
 			$bSpeedArray[] = $drivers->{'BestSpeed'};	 //Fill the array
 		}
 		if(array_key_exists('NTBestSpeed', $drivers)){ //If the key exists in the array (can happen with new sessions)
 			$ntBSpeedArray[] = $drivers->{'NTBestSpeed'};	 //Fill the array
+		}
+		if(array_key_exists('Best_T1_SPD', $drivers)){
+			$bestT1Array[] = $drivers->{'Best_T1_SPD'};
+		}
+		if(array_key_exists('Best_T2_SPD', $drivers)){
+			$bestT2Array[] = $drivers->{'Best_T2_SPD'};
+		}
+		if(array_key_exists('Best_T3_SPD', $drivers)){
+			$bestT3Array[] = $drivers->{'Best_T3_SPD'};
+		}
+		if(array_key_exists('Best_T4_SPD', $drivers)){
+			$bestT4Array[] = $drivers->{'Best_T4_SPD'};
 		}
 	}
 	if($bSpeedArray != NULL){	//If the array is not empty
@@ -264,45 +306,47 @@ if ($eventType == 'Indy500'){
 	if($ntBSpeedArray != NULL){	//If the array is not empty
 		$ntBestSpeedMax = max($ntBSpeedArray);	//Locate the fastest speed
 	}
+	if($bestT1Array != NULL){	//If the array is not empty
+		$bestT1Max = max($bestT1Array);	//Locate the fastest speed
+	}
+	if($bestT2Array != NULL){	//If the array is not empty
+		$bestT2Max = max($bestT2Array);	//Locate the fastest speed
+	}
+	if($bestT3Array != NULL){	//If the array is not empty
+		$bestT3Max = max($bestT3Array);	//Locate the fastest speed
+	}
+	if($bestT4Array != NULL){	//If the array is not empty
+		$bestT4Max = max($bestT4Array);	//Locate the fastest speed
+	}
 }
 
-
 //Driver Tables: Best Sectors
-if ($eventType != 'Oval'){	//This only applies for road/street courses
-	//Best Sector 1
+if ($eventType != 'Oval' && $eventType != 'Indy500'){	//This only applies for road/street courses
 	$bestS1 = array();	//Setup an empty array to strip out uncompleted S1
+	$bestS2 = array();	//Setup an empty array to strip out uncompleted S2
+	$bestS3 = array();	//Setup an empty array to strip out uncompleted S3
 	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		if(array_key_exists('Best_I1', $drivers)){	//If the key exists in the array (can happen with new sessions)
 			if($drivers->{'Best_I1'} != '0.0000' && $drivers->{'Best_I1'} != ''){
 				$bestS1[] = $drivers->{'Best_I1'};	//Fill the array with completed S1
 			}
 		}
-	}
-	if($bestS1 != NULL){
-		$bestS1Min = min($bestS1);	//Locate the fastest S1
-	}
-
-	//Best Sector 2
-	$bestS2 = array();	//Setup an empty array to strip out uncompleted S2
-	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		if(array_key_exists('Best_I2', $drivers)){	//If the key exists in the array (can happen with new sessions)
 			if($drivers->{'Best_I2'} != '0.0000' && $drivers->{'Best_I2'} != ''){
 				$bestS2[] = $drivers->{'Best_I2'};	//Fill the array with completed S2
 			}
 		}
-	}
-	if($bestS2 != NULL){
-		$bestS2Min = min($bestS2);	//Locate the fastest S2
-	}
-
-	//Best Sector 3
-	$bestS3 = array();	//Setup an empty array to strip out uncompleted S3
-	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		if(array_key_exists('Best_I3', $drivers)){	//If the key exists in the array (can happen with new sessions)
 			if($drivers->{'Best_I3'} != '0.0000' && $drivers->{'Best_I3'} != ''){
 				$bestS3[] = $drivers->{'Best_I3'};	//Fill the array with completed S3
 			}
 		}
+	}
+	if($bestS1 != NULL){
+		$bestS1Min = min($bestS1);	//Locate the fastest S1
+	}
+	if($bestS2 != NULL){
+		$bestS2Min = min($bestS2);	//Locate the fastest S2
 	}
 	if($bestS3 != NULL){
 		$bestS3Min = min($bestS3);	//Locate the fastest S3
@@ -342,34 +386,83 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	}
 
 	//Color Formatting: Best Lap Speed (Indy Only)
-	if ($drivers->{'BestSpeed'} == $bestSpeedMax){	//If a driver's fastest lap speed is best overall, color it purple
-		$bestSpeed = '<p class="sessionbest">'.$drivers->{'BestSpeed'}.'</p>';
-	}
-	else{
-		$bestSpeed = $drivers->{'BestSpeed'};
-	}
-	//Color Formatting: Best No-Tow Lap Speed
-	if (array_key_exists('NTBestSpeed', $drivers)){
-		if ($drivers->{'NTBestSpeed'} == $ntBestSpeedMax){	//If a driver's fastest no-tow lap speed is best overall, color it purple
-			$ntBestSpeed = '<p class="sessionbest">'.$drivers->{'NTBestSpeed'}.'</p>';
+	if ($eventType == 'Indy500'){
+		if ($drivers->{'BestSpeed'} == $bestSpeedMax){	//If a driver's fastest lap speed is best overall, color it purple
+			$bestSpeed = '<p class="sessionbest">'.$drivers->{'BestSpeed'}.'</p>';
 		}
 		else{
-			$ntBestSpeed = $drivers->{'NTBestSpeed'};
+			$bestSpeed = $drivers->{'BestSpeed'};
 		}
-	}
-	else{
-		$ntBestSpeed = "000.000";
+		//Color Formatting: Best Trap Speeds (Indy Only)
+		if (array_key_exists('Best_T1_SPD', $drivers)){
+			if ($drivers->{'Best_T1_SPD'} == $bestT1Max){	//If a driver's fastest T1 speed is best overall, color it purple
+				$bestT1 = '<p class="sessionbest">'.$drivers->{'Best_T1_SPD'}.'</p>';
+			}
+			else{
+				$bestT1 = $drivers->{'Best_T1_SPD'};
+			}
+		}
+		else{ //Because for some reason, Indy T&S doesn't always provide the key/value
+			$bestT1 = "000.000";
+		}
+		if (array_key_exists('Best_T2_SPD', $drivers)){
+			if ($drivers->{'Best_T2_SPD'} == $bestT2Max){	//If a driver's fastest T2 speed is best overall, color it purple
+				$bestT2 = '<p class="sessionbest">'.$drivers->{'Best_T2_SPD'}.'</p>';
+			}
+			else{
+				$bestT2 = $drivers->{'Best_T2_SPD'};
+			}
+		}
+		else{ //Because for some reason, Indy T&S doesn't always provide the key/value
+			$bestT2 = "000.000";
+		}
+		if (array_key_exists('Best_T3_SPD', $drivers)){
+			if ($drivers->{'Best_T3_SPD'} == $bestT3Max){	//If a driver's fastest T3 speed is best overall, color it purple
+				$bestT3 = '<p class="sessionbest">'.$drivers->{'Best_T3_SPD'}.'</p>';
+			}
+			else{
+				$bestT3 = $drivers->{'Best_T3_SPD'};
+			}
+		}
+		else{ //Because for some reason, Indy T&S doesn't always provide the key/value
+			$bestT3 = "000.000";
+		}
+		if (array_key_exists('Best_T4_SPD', $drivers)){
+			if ($drivers->{'Best_T4_SPD'} == $bestT4Max){	//If a driver's fastest T4 speed is best overall, color it purple
+				$bestT4 = '<p class="sessionbest">'.$drivers->{'Best_T4_SPD'}.'</p>';
+			}
+			else{
+				$bestT4 = $drivers->{'Best_T4_SPD'};
+			}
+		}
+		else{ //Because for some reason, Indy T&S doesn't always provide the key/value
+			$bestT4 = "000.000";
+		}
+		//Color Formatting: Best No-Tow Lap Speed
+		if (array_key_exists('NTBestSpeed', $drivers)){
+			if ($drivers->{'NTBestSpeed'} == $ntBestSpeedMax){	//If a driver's fastest no-tow lap speed is best overall, color it purple
+				$ntBestSpeed = '<p class="sessionbest">'.$drivers->{'NTBestSpeed'}.'</p>';
+			}
+			else{
+				$ntBestSpeed = $drivers->{'NTBestSpeed'};
+			}
+		}
+		else{
+			$ntBestSpeed = "000.000";
+		}
 	}
 
 	//Color Formatting: Overtake/Push to Pass
-	if ($drivers->{'OverTake_Remain'} >= 100){
-		$p2pRemain = '<p style="color:green;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
-	}
-	elseif ($drivers->{'OverTake_Remain'} <= 99 && $drivers->{'OverTake_Remain'} >= 60){
-		$p2pRemain = '<p style="color:orange;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
-	}
-	elseif ($drivers->{'OverTake_Remain'} <= 59) {
-		$p2pRemain = '<p style="color:red;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
+	if ($eventType != 'Oval' && $eventType != 'Indy500'){
+		if ($drivers->{'OverTake_Remain'} >= 100){
+			$p2pRemain = '<p style="color:green;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
+		}
+		elseif ($drivers->{'OverTake_Remain'} <= 99 && $drivers->{'OverTake_Remain'} >= 60){
+			$p2pRemain = '<p style="color:orange;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
+		}
+		elseif ($drivers->{'OverTake_Remain'} <= 59) {
+			$p2pRemain = '<p style="color:red;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
+		}
 	}
 	$diff2Lead 		= $drivers->{'diff'};
 	$gapAhead 		= $drivers->{'gap'};
@@ -385,9 +478,33 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		$lastSpeed   = $drivers->{'LastSpeed'};
 		$ntRank      = $drivers->{'NTRank'};
 		$ntBestTime  = $drivers->{'NTBestTime'};
+		if(array_key_exists('T1', $drivers)){
+			$t1		 = $drivers->{'T1'};
+		}
+		else{
+			$t1		 = '000.000';
+		}
+		if(array_key_exists('T2', $drivers)){
+			$t2		 = $drivers->{'T2'};
+		}
+		else{
+			$t2		 = '000.000';
+		}
+		if(array_key_exists('T3', $drivers)){
+			$t3		 = $drivers->{'T3'};
+		}
+		else{
+			$t3		 = '000.000';
+		}
+		if(array_key_exists('T4', $drivers)){
+			$t4		 = $drivers->{'T4'};
+		}
+		else{
+			$t4		 = '000.000';
+		}
 	}
 
-	//Oval
+	//Oval (non-Indy)
 	if ($eventType == 'Oval'){
 		if ($event->{'SessionType'} == 'R'){
 			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$lastPitLap. '</td><td>' .$lapsSincePit. '</td><td>' .$numPitStops. '</td><td>' .$status. '</td></tr>';
@@ -403,7 +520,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$lastPitLap. '</td><td>' .$lapsSincePit. '</td><td>' .$numPitStops. '</td><td>' .$status. '</td></tr>';
 		}
 		else{ //Practice or Qualifying
-			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$bestLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$bestSpeed. '</td><td>' .$avgSpeed. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
+			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
 		}
 	}
 	//Road Course/Street Course
