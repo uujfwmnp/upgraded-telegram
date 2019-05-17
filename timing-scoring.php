@@ -363,7 +363,10 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	$lastPitLap		= $drivers->{'lastPitLap'};
 	$lapsSincePit	= $drivers->{'sincePitLap'};
 	$numPitStops	= $drivers->{'pitStops'};
-	
+	$diff2Lead 		= $drivers->{'diff'};
+	$gapAhead 		= $drivers->{'gap'};
+	$status			= $drivers->{'status'};
+
 	//Color Formatting: Best Lap Time
 	if ($drivers->{'bestLapTime'} == $bestLapMin){	//If a driver's fastest lap is best overall, color it purple
 		$bestLapTime = '<p class="sessionbest">'.$drivers->{'bestLapTime'}.'</p>';
@@ -438,7 +441,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		else{ //Because for some reason, Indy T&S doesn't always provide the key/value
 			$bestT4 = "000.000";
 		}
-		//Color Formatting: Best No-Tow Lap Speed
+		//Color Formatting: Best No-Tow Lap Speed (Indy Only)
 		if (array_key_exists('NTBestSpeed', $drivers)){
 			if ($drivers->{'NTBestSpeed'} == $ntBestSpeedMax){	//If a driver's fastest no-tow lap speed is best overall, color it purple
 				$ntBestSpeed = '<p class="sessionbest">'.$drivers->{'NTBestSpeed'}.'</p>';
@@ -452,7 +455,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		}
 	}
 
-	//Color Formatting: Overtake/Push to Pass
+	//Color Formatting: Overtake/Push to Pass & Tires
 	if ($eventType != 'Oval' && $eventType != 'Indy500'){
 		if ($drivers->{'OverTake_Remain'} >= 100){
 			$p2pRemain = '<p style="color:green;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
@@ -463,15 +466,12 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		elseif ($drivers->{'OverTake_Remain'} <= 59) {
 			$p2pRemain = '<p style="color:red;font-weight:bold;">'.$drivers->{'OverTake_Remain'}.'</p>';
 		}
-	}
-	$diff2Lead 		= $drivers->{'diff'};
-	$gapAhead 		= $drivers->{'gap'};
-	$status			= $drivers->{'status'};
-	switch($drivers->{'Tire'}){
-		case 'P': $driverTire = '<p style="font-weight:bold;">B</p>'; break;
-		case 'W': $driverTire = '<p style="color:blue;font-weight:bold;">W</p>'; break;
-		case 'A': $driverTire = '<p style="color:red;font-weight:bold;">R</p>'; break;
-		default: $driverTire = 'Unknown'; break;
+		switch($drivers->{'Tire'}){
+			case 'P': $driverTire = '<p style="font-weight:bold;">B</p>'; break;
+			case 'W': $driverTire = '<p style="color:blue;font-weight:bold;">W</p>'; break;
+			case 'A': $driverTire = '<p style="color:red;font-weight:bold;">R</p>'; break;
+			default: $driverTire = 'Unknown'; break;
+		}
 	}
 	if ($eventType == "Indy500"){
 		$avgSpeed    = $drivers->{'AverageSpeed'};
@@ -506,7 +506,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 
 	//Oval (non-Indy)
 	if ($eventType == 'Oval'){
-		if ($event->{'SessionType'} == 'R'){
+		if ($eventSession == 'Race'){
 			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$lastPitLap. '</td><td>' .$lapsSincePit. '</td><td>' .$numPitStops. '</td><td>' .$status. '</td></tr>';
 //			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$status. '</td></tr>';
 		}
@@ -515,12 +515,18 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		}
 	}
 	//Indy 500
-	elseif ($event->{'trackType'} == "I"){
-		if ($event->{'SessionType'} == 'R'){
+	elseif ($eventType == "Indy500"){
+		if ($eventSession == 'Race'){
 			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$lastPitLap. '</td><td>' .$lapsSincePit. '</td><td>' .$numPitStops. '</td><td>' .$status. '</td></tr>';
 		}
 		else{ //Practice or Qualifying
-			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
+			if ($position == '34'){
+				print '<tr><td colspan="100%" style="text-align: center; background-color: yellow;">--- BUMP CUT OFF ---</td></tr>';
+				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
+			}
+			else{
+				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
+			}
 		}
 	}
 	//Road Course/Street Course
@@ -589,7 +595,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		}
 
 		// This should cover racing for all road/street courses
-		if ($event->{'SessionType'} == 'R'){
+		if ($eventSession == 'Race'){
 			if (preg_match('/\.I|.L/', $event->{'preamble'})) {	//If it's an Indy Lights or ICS race
 //				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$lSect1. '</td><td>' .$lSect2. '</td><td>' .$lSect3. '</td><td>' .$driverTire. '</td><td>' .$lastPitLap. '</td><td>' .$lapsSincePit. '</td><td>' .$numPitStops. '</td><td>' .$p2pRemain. '</td><td>' .$status. '</td></tr>';
 				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$bSect1. '</td><td>' .$lSect1. '</td><td>' .$bSect2. '</td><td>' .$lSect2. '</td><td>' .$bSect3. '</td><td>' .$lSect3. '</td><td>' .$driverTire. '</td><td>' .$lastPitLap. '</td><td>' .$lapsSincePit. '</td><td>' .$numPitStops. '</td><td>' .$p2pRemain. '</td><td>' .$status. '</td></tr>';
