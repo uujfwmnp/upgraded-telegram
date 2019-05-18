@@ -220,30 +220,55 @@ else { //If event *is not* a Race. . .
 </thead>';
 	}
 	elseif ($eventType == "Indy500") { //If track IS the Indy Oval. . .
-		echo '		<thead>
-		<tr>
-			<th style="width: 2%;">Pos</th>
-			<th>Driver</th>
-			<th>Car</th>
-			<th>Last Lap</th>
-			<th>Last Speed</th>
-			<th>T1</th>
-			<th>T2</th>
-			<th>T3</th>
-			<th>T4</th>
-			<th>Best Lap</th>
-			<th>Best Speed</th>
-			<th>Best T1</th>
-			<th>Best T2</th>
-			<th>Best T3</th>
-			<th>Best T4</th>
-			<th>4 Lap Avg</th>
-			<th>No-Tow Lap</th>
-			<th>No-Tow Speed</th>
-			<th>No Tow Rank</th>
-			<th>Status</th>
-		</tr>
-	</thead>';
+		if ($event->{'SessionType'} == 'Q') { //Qualifying
+			echo '		<thead>
+			<tr>
+				<th style="width: 2%;">Pos</th>
+				<th>Driver</th>
+				<th>Car</th>
+				<th>Last Lap</th>
+				<th>Last Speed</th>
+				<th>T1</th>
+				<th>T2</th>
+				<th>T3</th>
+				<th>T4</th>
+				<th>Best Lap</th>
+				<th>Best Speed</th>
+				<th>Best T1</th>
+				<th>Best T2</th>
+				<th>Best T3</th>
+				<th>Best T4</th>
+				<th>4 Lap Avg</th>
+				<th>Status</th>
+			</tr>
+		</thead>';
+		}
+		else{ //Practice
+			echo '		<thead>
+			<tr>
+				<th style="width: 2%;">Pos</th>
+				<th>Driver</th>
+				<th>Car</th>
+				<th>Last Lap</th>
+				<th>Last Speed</th>
+				<th>T1</th>
+				<th>T2</th>
+				<th>T3</th>
+				<th>T4</th>
+				<th>Best Lap</th>
+				<th>Best Speed</th>
+				<th>Best T1</th>
+				<th>Best T2</th>
+				<th>Best T3</th>
+				<th>Best T4</th>
+				<th>4 Lap Avg</th>
+				<th>No-Tow Lap</th>
+				<th>No-Tow Speed</th>
+				<th>No Tow Rank</th>
+				<th>Status</th>
+			</tr>
+		</thead>';
+		}
 	}
 	else { //If track IS a non-Indy Oval. . .
 		echo '		<thead>
@@ -529,7 +554,16 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		if ($eventSession == 'Race'){
 			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$lastPitLap. '</td><td>' .$lapsSincePit. '</td><td>' .$numPitStops. '</td><td>' .$status. '</td></tr>';
 		}
-		else{ //Practice or Qualifying
+		elseif ($eventSession == 'Qualifying'){ //Qualifying
+			if ($position == '34'){
+				print '<tr><td colspan="100%" style="text-align: center; background-color: yellow;">--- BUMP CUT OFF ---</td></tr>';
+				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$avgSpeed. '</td><td>' .$status. '</td></tr>';
+			}
+			else{
+				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$avgSpeed. '</td><td>' .$status. '</td></tr>';
+			}
+		}
+		else{ //Practice
 			if ($position == '34'){
 				print '<tr><td colspan="100%" style="text-align: center; background-color: yellow;">--- BUMP CUT OFF ---</td></tr>';
 				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
