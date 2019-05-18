@@ -237,6 +237,7 @@ else { //If event *is not* a Race. . .
 			<th>Best T2</th>
 			<th>Best T3</th>
 			<th>Best T4</th>
+			<th>4 Lap Avg</th>
 			<th>No-Tow Lap</th>
 			<th>No-Tow Speed</th>
 			<th>No Tow Rank</th>
@@ -265,7 +266,13 @@ else { //If event *is not* a Race. . .
 $bestLap = array();	//Setup an empty array to strip out uncompleted laps
 foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	if($drivers->{'bestLapTime'} != '0.0000'){
-		$bestLap[] = $drivers->{'bestLapTime'};	//Fill the array with completed laps
+		$numLen = strlen($drivers->{'bestLapTime'});
+		if($numLen == 7){
+			$bestLap[] = '0:'.$drivers->{'bestLapTime'};
+		}
+		else{
+			$bestLap[] = $drivers->{'bestLapTime'};	//Fill the array with completed laps
+		}
 	}
 }
 if($bestLap != NULL){	//If the array is not empty
@@ -304,27 +311,27 @@ if ($eventType == 'Indy500'){
 		$bestSpeedMax = max($bSpeedArray);	//Locate the fastest speed
 	}
 	if($ntBSpeedArray != NULL){	//If the array is not empty
-		$ntBestSpeedMax = max($ntBSpeedArray);	//Locate the fastest speed
+		$ntBestSpeedMax = max($ntBSpeedArray);	//Locate the fastest no-tow speed
 	}
 	if($bestT1Array != NULL){	//If the array is not empty
-		$bestT1Max = max($bestT1Array);	//Locate the fastest speed
+		$bestT1Max = max($bestT1Array);	//Locate the fastest T1 peed
 	}
 	if($bestT2Array != NULL){	//If the array is not empty
-		$bestT2Max = max($bestT2Array);	//Locate the fastest speed
+		$bestT2Max = max($bestT2Array);	//Locate the fastest T2 speed
 	}
 	if($bestT3Array != NULL){	//If the array is not empty
-		$bestT3Max = max($bestT3Array);	//Locate the fastest speed
+		$bestT3Max = max($bestT3Array);	//Locate the fastest T3 speed
 	}
 	if($bestT4Array != NULL){	//If the array is not empty
-		$bestT4Max = max($bestT4Array);	//Locate the fastest speed
+		$bestT4Max = max($bestT4Array);	//Locate the fastest T4 speed
 	}
 }
 
-//Driver Tables: Best Sectors
+//Driver Tables: Best Sectors (Road/Street Only)
 if ($eventType != 'Oval' && $eventType != 'Indy500'){	//This only applies for road/street courses
-	$bestS1 = array();	//Setup an empty array to strip out uncompleted S1
-	$bestS2 = array();	//Setup an empty array to strip out uncompleted S2
-	$bestS3 = array();	//Setup an empty array to strip out uncompleted S3
+	$bestS1 = array();	//Setup empty arrays to strip out uncompleted S1/S2/S3 vvv
+	$bestS2 = array();
+	$bestS3 = array();
 	foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 		if(array_key_exists('Best_I1', $drivers)){	//If the key exists in the array (can happen with new sessions)
 			if($drivers->{'Best_I1'} != '0.0000' && $drivers->{'Best_I1'} != ''){
@@ -368,7 +375,11 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	$status			= $drivers->{'status'};
 
 	//Color Formatting: Best Lap Time
-	if ($drivers->{'bestLapTime'} == $bestLapMin){	//If a driver's fastest lap is best overall, color it purple
+	$numLen = strlen($drivers->{'bestLapTime'});
+	if($numLen == 7){
+		$bestLap = '0:'.$drivers->{'bestLapTime'};
+	}
+	if ($bestLap == $bestLapMin){	//If a driver's fastest lap is best overall, color it purple
 		$bestLapTime = '<p class="sessionbest">'.$drivers->{'bestLapTime'}.'</p>';
 	}
 	else{
@@ -482,25 +493,25 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 			$t1		 = $drivers->{'T1'};
 		}
 		else{
-			$t1		 = '000.000';
+			$t1		 = '';
 		}
 		if(array_key_exists('T2', $drivers)){
 			$t2		 = $drivers->{'T2'};
 		}
 		else{
-			$t2		 = '000.000';
+			$t2		 = '';
 		}
 		if(array_key_exists('T3', $drivers)){
 			$t3		 = $drivers->{'T3'};
 		}
 		else{
-			$t3		 = '000.000';
+			$t3		 = '';
 		}
 		if(array_key_exists('T4', $drivers)){
 			$t4		 = $drivers->{'T4'};
 		}
 		else{
-			$t4		 = '000.000';
+			$t4		 = '';
 		}
 	}
 
@@ -508,7 +519,6 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 	if ($eventType == 'Oval'){
 		if ($eventSession == 'Race'){
 			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$lastPitLap. '</td><td>' .$lapsSincePit. '</td><td>' .$numPitStops. '</td><td>' .$status. '</td></tr>';
-//			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$diff2Lead. '</td><td>' .$gapAhead. '</td><td>' .$status. '</td></tr>';
 		}
 		else{ //Practice or Qualifying
 			print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$bestLapTime. '</td><td>' .$status. '</td></tr>';
@@ -525,7 +535,7 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
 				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
 			}
 			else{
-				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
+				print '<tr><td>' .$position. '</td><td>' .$driverName. '</td><td>' .$carNum. '</td><td>' .$lastLapTime. '</td><td>' .$lastSpeed. '</td><td>' .$t1. '</td><td>' .$t2. '</td><td>' .$t3. '</td><td>' .$t4. '</td><td>' .$bestLapTime. '</td><td>' .$bestSpeed. '</td><td>' .$bestT1. '</td><td>' .$bestT2. '</td><td>' .$bestT3. '</td><td>' .$bestT4. '</td><td>' .$avgSpeed. '</td><td>' .$ntBestTime. '</td><td>' .$ntBestSpeed. '</td><td>' .$ntRank. '</td><td>' .$status. '</td></tr>';
 			}
 		}
 	}
