@@ -1,9 +1,12 @@
 # upgraded-telegram
 Comment Bot &amp; Other Racing Stuff
 
-### Requirements:
+### Python Requirements:
 * Python 3
 * Requests module (`pip install requests`)
+
+### PHP Requirements:
+* PHP 5.6 or higher
 
 #### Files:
 * discord-comment.py
