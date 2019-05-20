@@ -14,7 +14,7 @@ Comment Bot &amp; Other Racing Stuff
 * IMSA-timing.py
   - Timing & scoring for IMSA races.
 * json-definition.md
-  - Attempts to list and define all key/value pairs in the JSON.
+  - Attempts to list and define all key/value pairs in the IndyCar JSON.
 * local-comment.py
   - Locally running comment script, prints to the screen.
 * timing-scoring.php
