@@ -13,6 +13,8 @@ Comment Bot &amp; Other Racing Stuff
   - Comment bot for Discord. Doesn't fully work as of the initial commit. Crashes after completing the second loop. Some kind of async issue, I'm not able to figure it out.
 * IMSA-timing.py
   - Timing & scoring for IMSA races.
+* json-definition.md
+  - Attempts to list and define all key/value pairs in the JSON.
 * local-comment.py
   - Locally running comment script, prints to the screen.
 * timing-scoring.php
