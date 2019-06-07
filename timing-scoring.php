@@ -412,7 +412,10 @@ foreach ($data->{'timing_results'}->{'Item'} as $drivers){
     if($numLen == 7){
         $bestLap = '0:'.$drivers->{'bestLapTime'};
     }
-    if ($bestLap == $bestLapMin && $bestLap != "0.000"){    //If a driver's fastest lap is best overall, color it purple
+    if ($bestLap == "0.000"){ //If a driver hasn't set a fast lap, use no formatting
+        $bestLapTime = $drivers->{'bestLapTime'};
+    }
+    elseif ($bestLap == $bestLapMin){ //If a driver's fastest lap is best overall, color it purple
         $bestLapTime = '<p class="sessionbest">'.$drivers->{'bestLapTime'}.'</p>';
     }
     else{
