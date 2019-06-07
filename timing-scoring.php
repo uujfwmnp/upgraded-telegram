@@ -387,24 +387,24 @@ if ($eventType != 'Oval' && $eventType != 'Indy500'){	//This only applies for ro
 
 //Driver Tables: Everything Else
 foreach ($data->{'timing_results'}->{'Item'} as $drivers){
-	$position		= $drivers->{'rank'};
+	$position	= $drivers->{'rank'};
 	$driverName 	= $drivers->{'lastName'};
-	$carNum 		= $drivers->{'no'};
-	$team 			= $drivers->{'team'};
+	$carNum 	= $drivers->{'no'};
+	$team 		= $drivers->{'team'};
 	$driverComment	= $drivers->{'comment'};
-	$lastPitLap		= $drivers->{'lastPitLap'};
+	$lastPitLap	= $drivers->{'lastPitLap'};
 	$lapsSincePit	= $drivers->{'sincePitLap'};
 	$numPitStops	= $drivers->{'pitStops'};
-	$diff2Lead 		= $drivers->{'diff'};
-	$gapAhead 		= $drivers->{'gap'};
-	$status			= $drivers->{'status'};
+	$diff2Lead 	= $drivers->{'diff'};
+	$gapAhead 	= $drivers->{'gap'};
+	$status		= $drivers->{'status'};
 
 	//Color Formatting: Best Lap Time
 	$numLen = strlen($drivers->{'bestLapTime'});
 	if($numLen == 7){
 		$bestLap = '0:'.$drivers->{'bestLapTime'};
 	}
-	if ($bestLap == $bestLapMin){	//If a driver's fastest lap is best overall, color it purple
+	if ($bestLap == $bestLapMin && $bestLap != "0.000"){	//If a driver's fastest lap is best overall, color it purple
 		$bestLapTime = '<p class="sessionbest">'.$drivers->{'bestLapTime'}.'</p>';
 	}
 	else{
