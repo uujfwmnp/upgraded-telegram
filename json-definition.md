@@ -101,6 +101,7 @@
 |-| `Active`|-|Driver on track|
 |-| `Contact`|-|Driver out of session due to contact|
 |-| `Mechanical`|-|Driver out of session due to mechanical failure|
+|-| `Qualifying`|-|Driver is qualifying|
 |`team`| `Chip Ganassi Racing Teams`|Team name||
 |`TeamID`| `25`|Unsure.||
 |`Tire`| `P`|Tire compound being used|P for Primary/Blacks|
