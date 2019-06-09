@@ -145,10 +145,10 @@ else{
 print '<tr><td style="font-weight:bold;">Comment:</td><td colspan="3">' . $event->{'Comment'} . '</td></tr>';
 if ($eventSession == 'Race'){
     if (array_key_exists('totalLaps', $event)){
-        print '<tr><td style="font-weight:bold;">Lap:</td><td>' . $event->{'lapNumber'} . ' of ' . $event->{'totalLaps'} . '</td></tr>';
+        print '<tr><td style="font-weight:bold;">Lap:</td><td colspan="3">' . $event->{'lapNumber'} . ' of ' . $event->{'totalLaps'} . '</td></tr>';
     }
     else{
-        print '<tr><td style="font-weight:bold;">Lap:</td><td>' . $event->{'lapNumber'} . '</td></tr>'; //Theoretically if a race becomes a timed race, this will display
+        print '<tr><td style="font-weight:bold;">Lap:</td><td colspan="3">' . $event->{'lapNumber'} . '</td></tr>'; //Theoretically if a race becomes a timed race, this will display
     }
 }
 ?>
