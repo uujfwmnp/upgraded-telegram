@@ -4,13 +4,15 @@ Comment Bot &amp; Other Racing Stuff
 ### Python Requirements:
 * Python 3
 * Requests module (`pip install requests`)
+* Discord.py module v1.2.3 or better (`pip install -U discord.py`)
+    - (Only if you want to use the comment bot)
 
 ### PHP Requirements:
 * PHP 5.6 or higher
 
 #### Files:
 * discord-comment.py
-  - Comment bot for Discord. Doesn't fully work as of the initial commit. Crashes after completing the second loop. Some kind of async issue, I'm not able to figure it out.
+  - Comment bot for Discord. ~~Doesn't fully work as of the initial commit. Crashes after completing the second loop. Some kind of async issue, I'm not able to figure it out.~~ Seems to work fine now with the latest Discord.py module.
 * IMSA-timing.py
   - Timing & scoring for IMSA races.
 * json-definition.md
