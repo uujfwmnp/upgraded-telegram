@@ -41,14 +41,14 @@ async def indycar_comments():
             if session == "Q" or session == "P":
                 if oldComment != newComment:    # If the new comment does not match the old stored comment. . .
                     if re.search('entered the pits.|exited the pits.', newComment): # Ignore pit in/out comments during qual/practice
-                        time.sleep(10)
+                        time.sleep(5)
                     else:
                         if len(commentLST) < 5:
                             listCount = len(commentLST)
                             commentLST.append("["+time.strftime('%X')+"] " + newComment)
                             oldComment = newComment             # Set the new comment to be the old comment
                             print(listCount)
-                            time.sleep(10)                      # 10 second wait before restarting loop
+                            time.sleep(5)                       # 5 second wait before restarting loop
                         if len(commentLST) == 5:
                             commentSTR = "\n".join(commentLST)
                             print("Printing Comments\n")        # Local Print the comment string
@@ -57,7 +57,7 @@ async def indycar_comments():
                             oldComment = newComment             # Set the new comment to be the old comment
                             commentSTR = ""                     # Reset the comment string
                             commentLST = []                     # Reset the comment list
-                            time.sleep(10)              # 10 second before restarting loop
+                            time.sleep(5)              # 5 second before restarting loop
                 else:                           # If the new comment *does* match the old stored comment. . .
                     count = 0
                     while(count < 5):   # Start a while timer
@@ -109,7 +109,7 @@ async def indycar_comments():
                         listCount = len(commentLST)
                         commentLST.append("["+time.strftime('%X')+"] " + newComment)
                         oldComment = newComment             # Set the new comment to be the old comment
-                        time.sleep(10)                      # 10 second wait before restarting loop
+                        time.sleep(5)                       # 5 second wait before restarting loop
                     if len(commentLST) == 5:
                         commentSTR = "\n".join(commentLST)
                         print("Printing Comments\n")        # Local Print the comment string
@@ -118,7 +118,7 @@ async def indycar_comments():
                         oldComment = newComment             # Set the new comment to be the old comment
                         commentSTR = ""                     # Reset the comment string
                         commentLST = []                     # Reset the comment list
-                        time.sleep(10)                      # 10 second wait before restarting loop
+                        time.sleep(5)                       # 5 second wait before restarting loop
                 else:                           # If the new comment *does* match the old stored comment. . .
 #                   time.sleep(10)
                     count = 0
@@ -164,6 +164,7 @@ async def indycar_comments():
 
     except KeyboardInterrupt:
         print("Ending Program\n")
+        await client.close()
         quit()
     pass
 
