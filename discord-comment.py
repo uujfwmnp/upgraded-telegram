@@ -39,78 +39,16 @@ async def indycar_comments():
             if eventFlag == "COLD":
                 print("Event has not started, or is finished.") # Local notice only
                 time.sleep(30)
-            if session == "Q" or session == "P":
-                if oldComment != newComment:    # If the new comment does not match the old stored comment. . .
-                    if re.search('entered the pits.|exited the pits.', newComment): # Ignore pit in/out comments during qual/practice
-                        time.sleep(5)
-                    else:
-                        if len(commentLST) < 5:
-                            listCount = len(commentLST)
-                            commentLST.append("["+time.strftime('%X')+"] " + newComment)
-                            oldComment = newComment             # Set the new comment to be the old comment
-                            print(listCount)
-                            time.sleep(5)                       # 5 second wait before restarting loop
-                        if len(commentLST) == 5:
-                            commentSTR = "\n".join(commentLST)
-                            print("Printing Comments\n")        # Local Print the comment string
-                            msg = "```" + commentSTR + "```"
-                            await channel.send(msg) # Send the comment to the Discord channel
-                            oldComment = newComment             # Set the new comment to be the old comment
-                            commentSTR = ""                     # Reset the comment string
-                            commentLST = []                     # Reset the comment list
-                            time.sleep(5)              # 5 second before restarting loop
-                else:                           # If the new comment *does* match the old stored comment. . .
-                    count = 0
-                    while(count < 5):   # Start a while timer
-                        print("loop number: %d" % (count + 1))
-                        count += 1      # Increment the timer each time it runs
-                        timing()        # Poll for new comments
-                        if oldComment != newComment:    # If the new comment does not match the old stored comment. . .
-                            if re.search('entered the pits.|exited the pits.', newComment): # Ignore pit in/out comments during qual/practice
-                                time.sleep(2)
-                                break                       # Stop the timer, we don't care about pit in/out
-                            else:
-                                print("New Data, Break\n")
-                                time.sleep(2)
-                                break                       # Stop the timer, we have a new comment
-                        if count == 5 and len(commentLST) in range (1,4):   # If we hit the time limit and have less than 5 new comments
-                            print("5s & <= 4 Timeout!",commentLST)  # Local Print the comment list
-                            commentSTR = "\n".join(commentLST)
-                            msg = "```" + commentSTR + "```"
-                            time.sleep(2)
-                            await channel.send(msg)
-                            oldComment = newComment
-                            commentSTR = ""
-                            commentLST = []
-                            count = 0                           # Reset the timeout counter
-                            break
-                        if count == 5 and len(commentLST) == 5: # If we hit the time limit and get 5 new comments
-                            print("5s & 5 comment Timeout!",commentLST) # Local Print the comment list
-                            commentSTR = "\n".join(commentLST)
-                            msg = "```" + commentSTR + "```"
-                            await channel.send(msg) # Send the comment to the Discord channel
-                            oldComment = newComment
-                            commentSTR = ""
-                            commentLST = []
-                            count = 0
-                            break
-                        if count == 5 and len(commentLST) == 0: # If we hit the time limit and have ZERO comments (red flag situation)
-                            print("Zero Comments",commentLST)   # Local Print the comment list
-                            commentSTR = ""
-                            commentLST = []
-                            count = 0
-                            break
-                        else:                           # If the old comment still matches the new comment
-                            print("Still Waiting, Count:",listCount,"\n",commentLST)
-                            time.sleep(2)               # Keep the while loop running, but do not do anything.
-
-            if session == "R":
-                if oldComment != newComment:                # If the new comment does not match the old stored comment. . .
-                    if len(commentLST) <= 4:
+            if oldComment != newComment:    # If the new comment does not match the old stored comment. . .
+                if session == "Q" or session == "P" and re.search('entered the pits.|exited the pits.', newComment): # Ignore pit in/out comments during qual/practice
+                    time.sleep(2)
+                else:
+                    if len(commentLST) < 5:
                         listCount = len(commentLST)
                         commentLST.append("["+time.strftime('%X')+"] " + newComment)
                         oldComment = newComment             # Set the new comment to be the old comment
-                        time.sleep(5)                       # 5 second wait before restarting loop
+                        print("listCount:", len(commentLST))
+                        time.sleep(2)                       # 5 second wait before restarting loop
                     if len(commentLST) == 5:
                         commentSTR = "\n".join(commentLST)
                         print("Printing Comments\n")        # Local Print the comment string
@@ -119,48 +57,52 @@ async def indycar_comments():
                         oldComment = newComment             # Set the new comment to be the old comment
                         commentSTR = ""                     # Reset the comment string
                         commentLST = []                     # Reset the comment list
-                        time.sleep(5)                       # 5 second wait before restarting loop
-                else:                           # If the new comment *does* match the old stored comment. . .
-#                   time.sleep(10)
-                    count = 0
-                    while(count < 5):   # Start a while timer
-                        print("loop number: %d" % (count + 1))
-                        count += 1  # Increment the timer each time it runs
-                        timing()    # Poll for new comments
-                        if oldComment != newComment:    # If the new comment does not match the old stored comment. . .
+                        time.sleep(2)                       # 5 second before restarting loop
+            else:                           # If the new comment *does* match the old stored comment. . .
+                count = 0
+                listCount = len(commentLST)
+                while(count <= 5):   # Start a while timer
+                    print("loop number: ", count+1)   # DEBUG: So we know where we are in the loop.
+                    count += 1      # Increment the timer each time it runs
+                    timing()        # Poll for new comments
+                    if oldComment != newComment:    # If the new comment does not match the old stored comment. . .
+                        if session == "Q" or session == "P" and re.search('entered the pits.|exited the pits.', newComment): # Ignore pit in/out comments during qual/practice
+                            time.sleep(2)
+                            break                       # Stop the timer, we don't care about pit in/out
+                        else:
                             print("New Data, Break\n")
                             time.sleep(2)
                             break                       # Stop the timer, we have a new comment
-                        if count == 5 and len(commentLST) in range (1,4):   # If we hit the time limit and have less than 5 new comments
-                            print("5s & <= 4 Timeout!",commentLST)  # Local Print the comment list
-                            commentSTR = "\n".join(commentLST)
-                            msg = "```" + commentSTR + "```"
-                            time.sleep(2)
-                            await channel.send(msg)
-                            oldComment = newComment
-                            commentSTR = ""
-                            commentLST = []
-                            count = 0                           # Reset the timeout counter
-                            break
-                        if count == 5 and len(commentLST) == 5: # If we hit the time limit and get 5 new comments
-                            print("5s & 5 comment Timeout!",commentLST) # Local Print the comment list
-                            commentSTR = "\n".join(commentLST)
-                            msg = "```" + commentSTR + "```"
-                            await channel.send(msg) # Send the comment to the Discord channel
-                            oldComment = newComment
-                            commentSTR = ""
-                            commentLST = []
-                            count = 0
-                            break
-                        if count == 5 and len(commentLST) == 0: # If we hit the time limit and have ZERO comments (red flag situation)
-                            print("Zero Comments",commentLST)   # Local Print the comment list
-                            commentSTR = ""
-                            commentLST = []
-                            count = 0
-                            break
-                        else:                           # If the old comment still matches the new comment
-                            print("Still Waiting, Count:",listCount,"\n",commentLST)
-                            time.sleep(2)               # Keep the while loop running, but do not do anything.
+                    if count == 5 and len(commentLST) in range (1,4):   # If we hit the time limit and have less than 5 new comments
+                        print("5 second timeout, less than 5 comments!",commentLST,"\n")  # Local Print the comment list
+                        commentSTR = "\n".join(commentLST)
+                        msg = "```" + commentSTR + "```"
+                        time.sleep(2)
+                        await channel.send(msg)
+                        oldComment = newComment
+                        commentSTR = ""
+                        commentLST = []
+                        count = 0                           # Reset the timeout counter
+                        break
+                    elif count == 5 and len(commentLST) == 5: # If we hit the time limit and get 5 new comments
+                        print("5 second timeout, 5 comments!",commentLST,"\n") # Local Print the comment list
+                        commentSTR = "\n".join(commentLST)
+                        msg = "```" + commentSTR + "```"
+                        await channel.send(msg) # Send the comment to the Discord channel
+                        oldComment = newComment
+                        commentSTR = ""
+                        commentLST = []
+                        count = 0
+                        break
+                    elif count == 5 and len(commentLST) == 0: # If we hit the time limit and have ZERO comments (red flag situation)
+                        print("Zero Comments\n",commentLST)   # Local Print the comment list
+                        commentSTR = ""
+                        commentLST = []
+                        count = 0
+                        break
+                    else:                           # If the old comment still matches the new comment
+                        print("Still Waiting, Comments Stored:",listCount,commentLST)
+                        time.sleep(2)               # Keep the while loop running, but do not do anything.
 
 
     except KeyboardInterrupt:
