@@ -30,8 +30,9 @@ async def indycar_comments():
     for server in client.guilds:
         print(server.name)
     channel = discord.utils.get(client.get_all_channels(), name='CHANNEL-NAME-HERE')
-    oldComment = ""
-    commentLST = []
+    listCount = None    #Setup variable
+    oldComment = ""     #Setup variable
+    commentLST = []     #Setup variable
     try:
         while True:
             timing()
