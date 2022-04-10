@@ -90,7 +90,7 @@ def p2pSpacing(length):
 
 try:
     while True:
-        get = requests.get('http://racecontrol.indycar.com/xml/timingscoring.json',timeout=10) # Request data from Indycar
+        get = requests.get('https://indycarsso.blob.core.windows.net/racecontrol/timingscoring.json',timeout=10) # Request data from Indycar
         if (get.status_code == 404):    # If the JSON file is missing
             exit("T&S site reports a 404, closing script")
         else:
