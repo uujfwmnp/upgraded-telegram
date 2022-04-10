@@ -10,7 +10,7 @@ print("!! PRESS CONTROL-C TO END THE PROGRAM !!\n")
 oldComment = ""
 try:
     while True:
-        get = requests.get('http://racecontrol.indycar.com/xml/timingscoring.json') # Request data from Indycar
+        get = requests.get('https://indycarsso.blob.core.windows.net/racecontrol/timingscoring.json') # Request data from Indycar
         rawdata = get.text                            # Set text of GET reply as a variable
         top = rawdata.replace("jsonCallback(", "")    # Remove top line that is not JSON valid
         bottom = top.replace(");", "")                # Remove bottom line that is not JSON valid
