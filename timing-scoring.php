@@ -2,7 +2,7 @@
 <head>
 <?php
 $ch = curl_init();      //Setting up cURL request to pull JSON
-curl_setopt($ch, CURLOPT_URL, 'http://racecontrol.indycar.com/xml/timingscoring.json');
+curl_setopt($ch, CURLOPT_URL, 'https://indycarsso.blob.core.windows.net/racecontrol/timingscoring.json');
 curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 $get = curl_exec($ch);  //Pull data from ICS
 curl_close($ch);        //Close cURL request
