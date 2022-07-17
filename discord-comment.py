@@ -29,7 +29,8 @@ async def indycar_comments():
     print("Current servers:")
     for server in client.guilds:
         print(server.name)
-    channel = discord.utils.get(client.get_all_channels(), name='CHANNEL-NAME-HERE')
+    #channel = discord.utils.get(client.get_all_channels(), name='CHANNEL-NAME-HERE')
+    channel = client.get_channel(1234567)
     listCount = None    #Setup variable
     oldComment = ""     #Setup variable
     commentLST = []     #Setup variable
